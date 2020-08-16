@@ -1,6 +1,6 @@
 
 # Project-specific ignores
-./public/external/libraries-bundle.js
+/public/external/libraries-bundle.js
 
 
 # Generated preset below.
