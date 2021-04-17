@@ -1,12 +1,13 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { MemoController } from './memo.controller';
 import { MongoService } from './mongo.service';
 import { SaltController } from './salt.controller';
 import { SaltService } from './salt.service';
 
 @Module({
     imports: [],
-    controllers: [AppController, SaltController],
+    controllers: [AppController, SaltController, MemoController],
     providers: [MongoService, SaltService],
 })
 export class AppModule implements OnModuleInit{

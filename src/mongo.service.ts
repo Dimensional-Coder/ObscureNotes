@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {MongoClient} from 'mongodb';
+import {Collection, MongoClient} from 'mongodb';
+import { Memo } from './memo.model';
+import { Salt } from './salt.model';
 
 @Injectable()
 export class MongoService {
@@ -39,5 +41,17 @@ export class MongoService {
 
     getClient(): MongoClient{
         return this.mongoClient;
+    }
+
+    getSaltCollection(): Collection<Salt>{
+        return this.mongoClient.db('test').collection('salts');
+    }
+
+    getMemoCollection(encryptedKey: string): Collection<Memo>{
+        //Remove information and salt from beginning of key
+        encryptedKey = encryptedKey.substring(encryptedKey.length-31);
+        
+        let collectionName = 'memos'+encryptedKey;
+        return this.mongoClient.db('test').collection(collectionName);
     }
 }

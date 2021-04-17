@@ -1,15 +1,10 @@
 import { Controller, Get, Query, Render, Redirect, Body, Post, Res, Delete, Param } from '@nestjs/common';
 
 import { MongoService } from './mongo.service';
-import { Salt } from './salt.model';
 import { SaltService } from './salt.service';
-
-//crypto
 
 /*
 Basic CRUD operations for salts.
-
-
 */
 @Controller()
 export class SaltController {
@@ -40,8 +35,7 @@ export class SaltController {
 
     @Get('/salts')
     async getAllSalts(){
-        let client = this.mongoService.getClient();
-        let collection = client.db('test').collection('salts');
+        let collection = this.mongoService.getSaltCollection();
 
         let err, allSalts = await collection.find().toArray();
 

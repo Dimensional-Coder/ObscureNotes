@@ -23,8 +23,7 @@ export class SaltService {
     create a new one for that hash.
     */
     async getOrCreateSalt(keyHash: string): Promise<string>{
-        let client = this.mongoService.getClient();
-        let collection = client.db('test').collection('salts');
+        let collection = this.mongoService.getSaltCollection();
 
         let findErr, saltRecord: Salt = await collection.findOne({keyHash: keyHash});
         if(findErr){
@@ -57,8 +56,7 @@ export class SaltService {
     }
 
     async deleteSalt(keyHash: string): Promise<void>{
-        let client = this.mongoService.getClient();
-        let collection = client.db('test').collection('salts');
+        let collection = this.mongoService.getSaltCollection();
 
         let err, res = collection.deleteOne({keyHash: keyHash});
         if(err){
