@@ -1,56 +1,28 @@
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>App</title>
-    <script src="external/libraries-bundle.js"></script>
-    <script src="index.js"></script>
-  </head>
-  <body>
-    <% if(str) { %>
-        <p>You supplied a value of <%= str %></p>
-    <% } %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <div id="encrypt">
-        <div>
-            <label>
-                Value to encrypt
-                <input type="text" name="encrypt-value" id="encrypt-value">
-            </label>
-        </div>
-        <div>
-            <label>
-                Encryption key
-                <input type="text" name="encrypt-key" id="encrypt-key">
-            </label>
-        </div>
+    <script src="external/bcrypt.js"></script>
+    <script src="notes-main.js"></script>
 
-        <div id="encrypt-result">
-            <p>Encrypted hex: <span id="encrypt-output"></span></p>
-        </div>
-    </div>
+    <title>Document</title>
+</head>
+<body>
+    <h2>Encrypt Key</h2>
 
-    
+    <label for="key">
+        Key
+        <input type="text" name="key" id="key-input">
+        <button type="button" id="key-submit-btn">Submit</button>
+    </label>
 
-    <div id="decrypt">
-        <div>
-            <label>
-                Hex to decrypt
-                <input type="text" name="decrypt-value" id="decrypt-value">
-            </label>
-        </div>
-        <div>
-            <label>
-                Decryption key
-                <input type="text" name="decrypt-key" id="decrypt-key">
-            </label>
-        </div>
+    <h2>Result</h2>
+    <p>Salt: <span id="salt-result"></span></p>
+    <p>Hashed key <span id="hash-result"></span></p>
+    <p>Encrypted key: <span id="encrypt-result"></span></p>
 
-        <div id="decrypt-result">
-            <p>Decrypted string: <span id="decrypt-output"></span></p>
-        </div>
-    </div>
-
-  </body>
+</body>
 </html>

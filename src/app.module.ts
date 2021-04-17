@@ -1,10 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongoService } from './mongo.service';
+import { SaltController } from './salt.controller';
+import { SaltService } from './salt.service';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [],
+    controllers: [AppController, SaltController],
+    providers: [MongoService, SaltService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit{
+
+    constructor(private readonly mongoService: MongoService){}
+
+    async onModuleInit(): Promise<any>{
+        //Cause an error on reject if connection fails
+        return this.mongoService.init();
+    }
+}
