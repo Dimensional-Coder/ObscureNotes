@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="external/bcrypt.js"></script>
-    <script src="notes-main.js"></script>
+    <script type="module" src="notes-main.js"></script>
 
     <title>Document</title>
 </head>
@@ -16,13 +16,29 @@
     <label for="key">
         Key
         <input type="text" name="key" id="key-input">
-        <button type="button" id="key-submit-btn">Submit</button>
     </label>
 
-    <h2>Result</h2>
+    <label for="new-memo">
+        New memo
+        <input type="text" name="new-memo" id="new-memo-input">
+    </label>
+
+    <button type="button" id="key-submit-btn">Submit</button>
+
+    <h2>Encrypt Results</h2>
     <p>Salt: <span id="salt-result"></span></p>
     <p>Hashed key <span id="hash-result"></span></p>
-    <p>Encrypted key: <span id="encrypt-result"></span></p>
+    <p>Encrypted key: <span id="encrypt-key-result"></span></p>
+    <p>Initialization vector: <span id="iv-result"></span></p>
+    <p>Encrypted note: <span id="encrypt-note-result"></span></p>
+
+    <h2>Memos</h2>
+    <div id="memos-container">
+        <p class="memo-text"></p>
+    </div>
+
+
+
 
 </body>
 </html>
