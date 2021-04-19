@@ -20,6 +20,7 @@ async function runEncrypt(){
 
         let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,newmemo);
 
+        let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
         //Display results on the page
         let hashResult = document.getElementById('hash-result');
         hashResult.innerHTML=keyHash;
