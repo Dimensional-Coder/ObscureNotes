@@ -48,7 +48,9 @@ export class MongoService {
     }
 
     getMemoCollection(encryptedKey: string): Collection<Memo>{
-        //Remove information and salt from beginning of key
+        //Remove information and salt from beginning of key, last 31 characters
+        //are the actual hash
+        //https://en.wikipedia.org/wiki/Bcrypt#Description
         encryptedKey = encryptedKey.substring(encryptedKey.length-31);
         
         let collectionName = 'memos'+encryptedKey;

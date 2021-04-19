@@ -35,37 +35,74 @@ export class MemoController {
         });
     }
 
-    @Post('/memos/:encryptedKey')
-    async createMemo(@Param('encryptedKey') encryptedKey, @Body('text') text){
+    /**
+     * Create or update a memo.
+     * @param encryptedKey Encrypted key to identify the memo collection
+     * @param memoid Id of the memo, if this is an update
+     * @param memobytes Encrypted memo text as a hex string (ie, 'ff10')
+     * @param iv Initialization vector used to encrypt the memo
+     * @returns Object
+     *              - operation: Operation done, 'create' or 'update'
+     *              - success: true or false
+     *              - memoobject: The memo object created or updated
+     */
+    @Post('/memos/:encryptedKey/:memoid?')
+    async upsertMemo(
+        @Param('encryptedKey') encryptedKey, @Param('memoid') memoid,
+        @Body('memobytes') memobytes, @Body('iv') iv){
+
         let collection = this.mongoService.getMemoCollection(encryptedKey);
 
-        let newMemo: Memo = {text: text};
-        let err, res = await collection.insertOne(newMemo);
+        let memo: Memo = {
+            memobytes: memobytes,
+            iv: iv
+        };
 
-        if(err){
-            console.error(err);
-            console.error(`Failed to insert new memo for encrypted key ${encryptedKey}`)
-            throw err;
+        //This is a new memo
+        if(!memoid){
+            let err, res = await collection.insertOne(memo);
+
+            if(err){
+                console.error(err);
+                console.error(`Failed to insert new memo for encrypted key ${encryptedKey}`)
+                throw err;
+            }
+
+            let newmemo = res.ops[0];
+            console.log(`Created memo ${newmemo._id} for key ${encryptedKey}`);
+    
+            return Promise.resolve({
+                operation: 'create',
+                success: true,
+                memoobject: newmemo
+            });
         }
+        
+        //If id provided, update instead of create
+        else{
+            let id = new ObjectID(memoid)
 
-        return Promise.resolve(res.ops[0]);
-    }
-
-    @Put('/memos/:encryptedKey/:id')
-    async updateMemo(@Param('encryptedKey') encryptedKey, @Param('id') id, @Body('text') text){
-        let collection = this.mongoService.getMemoCollection(encryptedKey);
-
-        let err, res = await collection.updateOne(
-            {_id: new ObjectID(id)},
-            { $set: {text: text}}
-        );
-
-        if(err){
-            console.error(err);
-            console.error(`Failed to update memo ${id} for encrypted key ${encryptedKey}`)
-            throw err;
+            let err, res = await collection.updateOne(
+                {_id: id},
+                { $set: {memobytes: memobytes, iv: iv}}
+            );
+    
+            if(err){
+                console.error(err);
+                console.error(`Failed to update memo ${id} for encrypted key ${encryptedKey}`)
+                throw err;
+            }
+    
+            console.log(`Updated memo ${memoid} for key ${encryptedKey}`);
+            return Promise.resolve({
+                operation: 'update',
+                success: true,
+                memoobject: {
+                    _id: memoid,
+                    memobytes: memobytes,
+                    iv: iv
+                }
+            });
         }
-
-        return Promise.resolve({success: true});
     }
 }
