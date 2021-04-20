@@ -11,37 +11,36 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>Encrypt Key</h2>
-
+    <h2>Enter your keyphrase</h2>
     <label for="key">
         Key
         <input type="text" name="key" id="key-input">
     </label>
 
-    <label for="new-memo">
-        New memo
-        <input type="text" name="new-memo" id="new-memo-input">
-    </label>
-
-    <button type="button" id="key-submit-btn">Submit</button>
-
-    <h2>Encrypt Results</h2>
-    <p>Salt: <span id="salt-result"></span></p>
-    <p>Hashed key <span id="hash-result"></span></p>
-    <p>Encrypted key: <span id="encrypt-key-result"></span></p>
-    <p>Initialization vector: <span id="iv-result"></span></p>
-    <p>Encrypted note: <span id="encrypt-note-result"></span></p>
+    <button type="button" id="key-submit-btn">Get memos</button>
 
     <h2>Memos</h2>
     <section id="notes-section">
-        <button type="button" id="get-notes-btn">Get Notes</button>
-
         <div class="notes-container" id="notes-container-01">
             <input class="notes-input" id="notes-input-01" name="notes-input-01"></p>
         </div>
+
+        <label for="new-memo">
+            New memo
+            <input type="text" name="new-memo" id="new-memo-input">
+        </label>
+
+        <button type="button" id="memo-submit-btn">Submit memo</button>
     </section>
 
-
+    <h2>[DEBUG] Encrypt Info</h2>
+    <section>
+        <p>Key Salt: <span id="salt-result"></span></p>
+        <p>(Weakly) Hashed Key: <span id="hash-result"></span></p>
+        <p>(Bcrypt) Encrypted Key: <span id="encrypt-key-result"></span></p>
+        <p>Aes Initialization Vector: <span id="iv-result"></span></p>
+        <p>Encrypted Memo Bytes: <span id="encrypt-note-result"></span></p>
+    </section>
 
 </body>
 </html>

@@ -12,7 +12,7 @@ import { NotesContainer } from './notes-container.js';
 
 const NOTES_DEBUG = true;
 
-async function runEncrypt(){
+async function runMemoEncrypt(){
     let key = document.getElementById('key-input').value;
     let newmemo = document.getElementById('new-memo-input').value;
 
@@ -25,27 +25,66 @@ async function runEncrypt(){
         let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,newmemo);
 
         let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
+        insertMemo(res._id, newmemo);
+        document.getElementById('new-memo-input').value = "";
+        
         console.log(res);
 
-        //Display results on the page
-        let hashResult = document.getElementById('hash-result');
-        hashResult.innerHTML=keyHash;
-        
-        let saltResult = document.getElementById('salt-result');
-        saltResult.innerHTML=salt;
-        
-        let encryptKeyResult = document.getElementById('encrypt-key-result');
-        encryptKeyResult.innerHTML=encryptedKey;
+        if(NOTES_DEBUG){
+            //Display results on the page
+            let hashResult = document.getElementById('hash-result');
+            hashResult.innerHTML=keyHash;
+            
+            let saltResult = document.getElementById('salt-result');
+            saltResult.innerHTML=salt;
+            
+            let encryptKeyResult = document.getElementById('encrypt-key-result');
+            encryptKeyResult.innerHTML=encryptedKey;
 
-        let ivResult = document.getElementById('iv-result');
-        ivResult.innerHTML=iv;
+            let ivResult = document.getElementById('iv-result');
+            ivResult.innerHTML=iv;
 
-        let encryptNoteResult = document.getElementById('encrypt-note-result');
-        encryptNoteResult.innerHTML=encryptedNote;
+            let encryptNoteResult = document.getElementById('encrypt-note-result');
+            encryptNoteResult.innerHTML=encryptedNote;
+        }
     }
     catch(err){
         console.error(err);
     }
+}
+
+//Create a new DOM element for a memo object
+function insertMemo(id, memotext, first=false){
+    let elems = document.getElementsByClassName('notes-container');
+    let lastContainer = elems[elems.length-1];
+            
+    let currentContainer = null;
+    if(first){
+        currentContainer = lastContainer;
+    }
+    else{
+        currentContainer = lastContainer.cloneNode(true);
+        lastContainer.insertAdjacentElement("afterend", currentContainer);
+    }
+
+    //Write the memo into this element
+    let input = currentContainer.getElementsByClassName('notes-input')[0];
+    input.value = memotext;
+    currentContainer.id = `notes-container-${id}`;
+    input.id = `notes-input-${id}`;
+    input.name = `notes-input-${id}`;
+}
+
+//Remove DOM elements for existing memos, excluding the first
+function clearMemos(){
+    let memoElements = document.getElementsByClassName('notes-container');
+
+    //Reset list by deleting all but first note dom element
+    for(let i=memoElements.length-1; i>=1; i--){
+        memoElements[i].remove();
+    }
+
+    memoElements[0].getElementsByClassName('notes-input')[0].value="";
 }
 
 async function populateMemos(){
@@ -59,59 +98,26 @@ async function populateMemos(){
     let notes = await NotesApi.getMemos(encryptedKey);
     console.log(notes);
 
-    //Reset list by deleting all but first note dom element
-    for(let i=currentNotes.length-1; i>=1; i--){
-        currentNotes[i].noteContainer.remove();
-        currentNotes.pop();
-    }
-    currentNotes[0].noteContainer.getElementsByClassName('notes-input')[0].value="";
+    clearMemos();
 
+    let first = true;
     for(let i=0; i<notes.length; i++){
-        let currentContainer = null;
-            
-        if(i==0){
-            currentContainer = currentNotes[i].noteContainer;
-        }else{
-            let previousContainer = currentNotes[i-1].noteContainer;
-            currentContainer = previousContainer.cloneNode(true);
-            previousContainer.insertAdjacentElement("afterend", currentContainer);
-        }
-
         let note = notes[i];
         let decryptedNoteText = 
             await NotesCrypto.decryptNote(key, salt, note.iv, note.memobytes);
         
-        let input = currentContainer.getElementsByClassName('notes-input')[0];
-        input.value = decryptedNoteText;
-        currentContainer.id = `notes-container-${note._id}`;
-        input.id = `notes-input-${note._id}`;
-        input.name = `notes-input-${note._id}`;
-
-        if(i!=0){
-            currentNotes.push(new NotesContainer(
-                note, currentContainer
-            ));
-        }
+        insertMemo(note._id, decryptedNoteText, first);
+        first=false;
     }
 }
 
-
-//List of each note, with the note object
-var currentNotes = [];
-
 function init(){
     
-    let keySubmitButton = document.getElementById('key-submit-btn');
-    keySubmitButton.addEventListener('click', () => runEncrypt());
+    let keySubmitButton = document.getElementById('memo-submit-btn');
+    keySubmitButton.addEventListener('click', () => runMemoEncrypt());
 
-    let getNotesButton = document.getElementById('get-notes-btn');
+    let getNotesButton = document.getElementById('key-submit-btn');
     getNotesButton.addEventListener('click', () => populateMemos());
-
-    let ncElement = document.getElementsByClassName('notes-container')[0];
-    currentNotes.push(new NotesContainer(
-        null,
-        ncElement
-    ));
 
     //Provide access to my module functions
     //if we're debugging
@@ -120,7 +126,7 @@ function init(){
         window.NotesConvert = NotesConvert;
         window.NotesCrypto = NotesCrypto;
         window.bcrypt = dcodeIO.bcrypt;
-        window.currentNotes = currentNotes;
+        window.clearMemos = clearMemos;
     }
     console.log("Initialized");
 }
