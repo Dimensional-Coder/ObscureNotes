@@ -33,7 +33,6 @@ async function runMemoEncrypt(event, update=false){
         let keyHash = await NotesCrypto.hashKey(key);
         let salt = await NotesApi.getSalt(keyHash);
         let encryptedKey = await NotesCrypto.encryptKey(key, salt);
-        encryptedKey = encryptedKey.replaceAll("/","_");
 
         let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,memotext);
 
@@ -71,6 +70,25 @@ async function runMemoEncrypt(event, update=false){
     }
 }
 
+async function runMemoDelete(event){
+    //id in form 'memo-update-btn-#####'
+    let elemid = event.target.id;
+    let id_index = elemid.lastIndexOf('-') + 1;
+    let memoid = elemid.substring(id_index, elemid.length);
+
+    let key = document.getElementById('key-input').value;
+
+    let keyHash = await NotesCrypto.hashKey(key);
+    let salt = await NotesApi.getSalt(keyHash);
+    let encryptedKey = await NotesCrypto.encryptKey(key, salt);
+
+    let res = await NotesApi.deleteMemo(encryptedKey, memoid);
+
+    //Delete node in DOM
+    let container = document.getElementById(`notes-container-${memoid}`);
+    container.remove();
+}
+
 //Create a new DOM element for a memo object
 function insertMemo(id, memotext, first=false){
     let elems = document.getElementsByClassName('notes-container');
@@ -93,10 +111,15 @@ function insertMemo(id, memotext, first=false){
     input.name = `memo-input-${id}`;
 
     let updButton = currentContainer.getElementsByClassName('memo-update-btn')[0];
-    updButton.id= `memo-update-btn-${id}`;
+    updButton.id = `memo-update-btn-${id}`;
 
-    if(!first)
+    let delButton = currentContainer.getElementsByClassName('memo-delete-btn')[0];
+    delButton.id = `memo-delete-btn-${id}`;
+
+    if(!first){
         updButton.addEventListener('click',(event)=>runMemoEncrypt(event, true));
+        delButton.addEventListener('click', (event) => runMemoDelete(event));
+    }
 }
 
 //Remove DOM elements for existing memos, excluding the first
@@ -117,7 +140,6 @@ async function populateMemos(){
     let keyHash = await NotesCrypto.hashKey(key);
     let salt = await NotesApi.getSalt(keyHash);
     let encryptedKey = await NotesCrypto.encryptKey(key, salt);
-    encryptedKey = encryptedKey.replaceAll("/","_");
 
     let notes = await NotesApi.getMemos(encryptedKey);
     console.log(notes);
@@ -145,6 +167,9 @@ function init(){
 
     let memoUpdateButton = document.getElementsByClassName('memo-update-btn')[0];
     memoUpdateButton.addEventListener('click', (event) => runMemoEncrypt(event, true));
+
+    let memoDeleteButton = document.getElementsByClassName('memo-delete-btn')[0];
+    memoDeleteButton.addEventListener('click', (event) => runMemoDelete(event));
 
     //Provide access to my module functions
     //if we're debugging

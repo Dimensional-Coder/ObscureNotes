@@ -105,4 +105,23 @@ export class MemoController {
             });
         }
     }
+
+    @Delete('/memos/:encryptedKey/:memoid?')
+    async deleteMemo(@Param('encryptedKey') encryptedKey, @Param('memoid') memoid){
+        let collection = this.mongoService.getMemoCollection(encryptedKey);
+
+        let id = new ObjectID(memoid)
+
+        let err, res = collection.deleteOne({_id: id});
+
+        if(err){
+            console.error(err);
+            console.error(`Failed to delete memo ${id} for encrypted key ${encryptedKey}`)
+            throw err;
+        }
+
+        console.log(`Deleted memo ${id} for encrypted key ${encryptedKey}`)
+
+        return Promise.resolve(true);
+    }
 }

@@ -26,6 +26,9 @@ export class NotesApi{
      * @returns An array of encrypted memo objects
      */
     static async getMemos(encryptedKey){
+        //Key can't have slashes
+        encryptedKey = encryptedKey.replaceAll("/","_");
+
         let res = await fetch(`/memos/${encryptedKey}`, {
             method: 'GET'
         });
@@ -43,6 +46,8 @@ export class NotesApi{
      * @returns The inserted memo object to the server database
      */
     static async createMemo(encryptedKey, encryptedMemo, iv){
+        encryptedKey = encryptedKey.replaceAll("/","_");
+
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
@@ -61,6 +66,8 @@ export class NotesApi{
     }
 
     static async updateMemo(encryptedKey, memoid, encryptedMemo, iv){
+        encryptedKey = encryptedKey.replaceAll("/","_");
+
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
@@ -76,5 +83,22 @@ export class NotesApi{
         let data = await res.json();
 
         return Promise.resolve(data.memoobject);
+    }
+
+    static async deleteMemo(encryptedKey, memoid){
+        encryptedKey = encryptedKey.replaceAll("/","_");
+        
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        let res = await fetch(`/memos/${encryptedKey}/${memoid}`, {
+            method: 'DELETE',
+            headers: headers,
+            body: JSON.stringify({})
+        });
+
+        let data = await res.json();
+
+        return Promise.resolve();
     }
 }
