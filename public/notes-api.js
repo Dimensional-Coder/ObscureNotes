@@ -59,4 +59,22 @@ export class NotesApi{
 
         return Promise.resolve(data.memoobject);
     }
+
+    static async updateMemo(encryptedKey, memoid, encryptedMemo, iv){
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        let res = await fetch(`/memos/${encryptedKey}/${memoid}`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                memobytes: encryptedMemo,
+                iv: iv
+            })
+        });
+
+        let data = await res.json();
+
+        return Promise.resolve(data.memoobject);
+    }
 }

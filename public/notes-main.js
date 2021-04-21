@@ -12,9 +12,22 @@ import { NotesContainer } from './notes-container.js';
 
 const NOTES_DEBUG = true;
 
-async function runMemoEncrypt(){
+async function runMemoEncrypt(event, update=false){
+    console.log(event);
+
     let key = document.getElementById('key-input').value;
-    let newmemo = document.getElementById('new-memo-input').value;
+    let memotext = null;
+    let memoid = null;
+    
+    if(!update){
+        memotext = document.getElementById('new-memo-input').value;
+    }else{
+        //id in form 'memo-update-btn-#####'
+        let elemid = event.target.id;
+        let id_index = elemid.lastIndexOf('-') + 1;
+        memoid = elemid.substring(id_index, elemid.length);
+        memotext = document.getElementById(`memo-input-${memoid}`).value;
+    }
 
     try{
         let keyHash = await NotesCrypto.hashKey(key);
@@ -22,13 +35,18 @@ async function runMemoEncrypt(){
         let encryptedKey = await NotesCrypto.encryptKey(key, salt);
         encryptedKey = encryptedKey.replaceAll("/","_");
 
-        let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,newmemo);
+        let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,memotext);
 
-        let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
-        insertMemo(res._id, newmemo);
-        document.getElementById('new-memo-input').value = "";
-        
-        console.log(res);
+        if(!update){
+            let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
+            console.log(res);
+
+            insertMemo(res._id, memotext);
+            document.getElementById('new-memo-input').value = "";
+        }else{
+            let res = await NotesApi.updateMemo(encryptedKey, memoid, encryptedNote, iv);
+            console.log(res);
+        }
 
         if(NOTES_DEBUG){
             //Display results on the page
@@ -68,11 +86,17 @@ function insertMemo(id, memotext, first=false){
     }
 
     //Write the memo into this element
-    let input = currentContainer.getElementsByClassName('notes-input')[0];
+    let input = currentContainer.getElementsByClassName('memo-input')[0];
     input.value = memotext;
     currentContainer.id = `notes-container-${id}`;
-    input.id = `notes-input-${id}`;
-    input.name = `notes-input-${id}`;
+    input.id = `memo-input-${id}`;
+    input.name = `memo-input-${id}`;
+
+    let updButton = currentContainer.getElementsByClassName('memo-update-btn')[0];
+    updButton.id= `memo-update-btn-${id}`;
+
+    if(!first)
+        updButton.addEventListener('click',(event)=>runMemoEncrypt(event, true));
 }
 
 //Remove DOM elements for existing memos, excluding the first
@@ -84,7 +108,7 @@ function clearMemos(){
         memoElements[i].remove();
     }
 
-    memoElements[0].getElementsByClassName('notes-input')[0].value="";
+    memoElements[0].getElementsByClassName('memo-input')[0].value="";
 }
 
 async function populateMemos(){
@@ -114,10 +138,13 @@ async function populateMemos(){
 function init(){
     
     let keySubmitButton = document.getElementById('memo-submit-btn');
-    keySubmitButton.addEventListener('click', () => runMemoEncrypt());
+    keySubmitButton.addEventListener('click', (event) => runMemoEncrypt(event));
 
     let getNotesButton = document.getElementById('key-submit-btn');
     getNotesButton.addEventListener('click', () => populateMemos());
+
+    let memoUpdateButton = document.getElementsByClassName('memo-update-btn')[0];
+    memoUpdateButton.addEventListener('click', (event) => runMemoEncrypt(event, true));
 
     //Provide access to my module functions
     //if we're debugging
