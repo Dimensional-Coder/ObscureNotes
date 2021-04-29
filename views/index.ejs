@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <link rel="stylesheet" href="/css/test.css">
+    <link rel="stylesheet" href="/css/memo-main.css">
     <script src="/js/test.js"></script>
 </head>
 <body>
     
-    <div class='main-container'>
+    <section class='memo-screen screen-active' id='memo-splash-screen'>
         <section id='memos-title'>
             <h1>Obscure Notes</h1>
             <p class='main-subtitle'>Anonymous storage of memos and ideas.</p>
@@ -24,25 +24,31 @@
             <input type="text" id="memos-keyphrase-input" placeholder="Key">
             <button id="key-submit-btn" type="button" class="memos-btn">Get Started</button>
         </section>
-    </div>
-    
-    <!-- Background animation, for aesthetic purposes. -->
-    <section id='memos-bg-animation'>
-        <div class='memos-box memos-bg-box' id='memos-bg-box-0'>
-            <span class='memos-bg-box-text'></span>
-        </div>
 
-        <div class='memos-box memos-bg-box' id='memos-bg-box-1'>
-            <span class='memos-bg-box-text'></span>
-        </div>
+        <!-- Background animation, for aesthetic purposes. -->
+        <section id='memos-bg-animation'>
+            <div class='memos-box memos-bg-box' id='memos-bg-box-0'>
+                <span class='memos-bg-box-text'></span>
+            </div>
 
-        <div class='memos-box memos-bg-box' id='memos-bg-box-2'>
-            <span class='memos-bg-box-text'></span>
-        </div>
+            <div class='memos-box memos-bg-box' id='memos-bg-box-1'>
+                <span class='memos-bg-box-text'></span>
+            </div>
 
-        <div class='memos-box memos-bg-box' id='memos-bg-box-3'>
-            <span class='memos-bg-box-text'></span>
-        </div>
+            <div class='memos-box memos-bg-box' id='memos-bg-box-2'>
+                <span class='memos-bg-box-text'></span>
+            </div>
+
+            <div class='memos-box memos-bg-box' id='memos-bg-box-3'>
+                <span class='memos-bg-box-text'></span>
+            </div>
+        </section>
     </section>
+
+    <section class='memo-screen screen-inactive' id='memo-application-screen'>
+        <h1>HELLO THERE</h1>
+    </section>
+    
+    
 </body>
 </html>

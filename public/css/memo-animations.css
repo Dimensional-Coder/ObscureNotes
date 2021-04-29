@@ -1,0 +1,39 @@
+
+@import './memo-text-animation.css';
+
+/* Scroll down effect for bg boxes */
+@keyframes scroll-loop{
+    from{
+        top: -30vh;
+    }
+
+    to{
+        top: 120vh;
+    }
+}
+
+/* Animate a view screen leaving */
+@keyframes screen-begone{
+    from{
+        left: 0vw;
+        visibility: visible;
+    }
+
+    to{
+        left: 110vw;
+        visibility: hidden;
+    }
+}
+
+/* Animate a view screen coming to the main view */
+@keyframes screen-bootycall{
+    from{
+        left: -110vw;
+        visibility: hidden;
+    }
+
+    to{
+        left: 0vw;
+        visibility: visible;
+    }
+}
