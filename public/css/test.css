@@ -123,8 +123,20 @@ h1{
     margin: 10px;
     overflow-wrap: anywhere;
 
-    animation: populate-text infinite 8s;
+    /* animation: populate-text infinite 8s; */
+    animation-name: populate-text;
+    animation-iteration-count: infinite;
 }
+
+/* Default bg box placement and timing */
+#memos-bg-box-0{left: 5vw; animation-delay: 4s;}
+#memos-bg-box-1{left: 25vw; animation-delay: 0s;}
+#memos-bg-box-2{left: 50vw; animation-delay: 6s;}
+#memos-bg-box-3{left: 75vw; animation-delay: 2s;}
+#memos-bg-box-0 .memos-bg-box-text::before{animation-duration: 6s;}
+#memos-bg-box-1 .memos-bg-box-text::before{animation-duration: 8s;}
+#memos-bg-box-2 .memos-bg-box-text::before{animation-duration: 4s;}
+#memos-bg-box-3 .memos-bg-box-text::before{animation-duration: 10s;}
 
 @keyframes scroll-loop{
     from{

@@ -20,6 +20,7 @@
         <section id='memos-start'>
             <p>Get started by entering a secret password</p>
             <!-- TODO: Make this input auto resize -->
+            <!-- Autoresizing idea: https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize-->
             <input type="text" id="memos-keyphrase-input" placeholder="Key">
             <button id="key-submit-btn" type="button" class="memos-btn">Get Started</button>
         </section>
@@ -27,19 +28,19 @@
     
     <!-- Background animation, for aesthetic purposes. -->
     <section id='memos-bg-animation'>
-        <div class='memos-bg-box'>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-0'>
             <span class='memos-bg-box-text'></span>
         </div>
 
-        <div class='memos-bg-box'>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-1'>
             <span class='memos-bg-box-text'></span>
         </div>
 
-        <div class='memos-bg-box'>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-2'>
             <span class='memos-bg-box-text'></span>
         </div>
 
-        <div class='memos-bg-box'>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-3'>
             <span class='memos-bg-box-text'></span>
         </div>
     </section>

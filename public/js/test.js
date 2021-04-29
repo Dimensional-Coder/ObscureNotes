@@ -6,7 +6,9 @@ function setRandomStartPosition(e){
     box.style.setProperty('left', `${newpos}vw`);
 }
 
-function init(){
+//Initialize bg boxes to have random placement
+//for the animations
+function initBgBoxes(){
     let bgBoxes = document.getElementsByClassName('memos-bg-box');
 
     let curDelay = 0;
@@ -17,6 +19,10 @@ function init(){
         box.style.setProperty('animation-delay', `${curDelay}s`);
         curDelay+=delayInc;
     }
+}
+
+function init(){
+    //initBgBoxes();
 }
 
 window.onload = init;
