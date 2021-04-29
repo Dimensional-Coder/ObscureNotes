@@ -52,18 +52,10 @@ function triggerScreenTransition(e){
 
     //Find next screen element, which will be the new screen
     let allScreens = document.getElementsByClassName('memo-screen');
-    let currentIndex = null;
+    let currentIndex = Array.prototype.indexOf.call(allScreens, currentScreen);
 
-    for(let i=0; i<allScreens.length; i++){
-        if(allScreens[i]==currentScreen){
-            currentIndex=i;
-            break;
-        }
-    }
-
-    if(currentIndex == null){
+    if(currentIndex == -1){
         console.error('Failed to find index of the current screen, can\'t transition');
-        console.error(currentIndex);
         return;
     }
 
