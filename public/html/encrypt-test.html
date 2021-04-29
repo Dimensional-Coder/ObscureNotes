@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="/external/bcrypt.js"></script>
+    <script type="module" src="/js/notes-main.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <h2>Enter your keyphrase</h2>
+    <label for="key">
+        Key
+        <input type="text" name="key" id="key-input">
+    </label>
+
+    <button type="button" id="key-submit-btn">Get memos</button>
+
+    <h2>Memos</h2>
+    <section id="notes-section">
+        <div class="notes-container" id="notes-container-01">
+            <input class="memo-input" id="memo-input-01" name="memo-input-01">
+            <button type="button" class="memo-update-btn" id="memo-update-btn-01">Update memo</button>
+            <button type="button" class="memo-delete-btn" id="memo-update-btn-01">Delete memo</button>
+        </div>
+
+        <label for="new-memo">
+            New memo
+            <input type="text" name="new-memo" id="new-memo-input">
+        </label>
+
+        <button type="button" id="memo-submit-btn">Submit memo</button>
+    </section>
+
+    <h2>[DEBUG] Encrypt Info</h2>
+    <section>
+        <p>Key Salt: <span id="salt-result"></span></p>
+        <p>(Weakly) Hashed Key: <span id="hash-result"></span></p>
+        <p>(Bcrypt) Encrypted Key: <span id="encrypt-key-result"></span></p>
+        <p>Aes Initialization Vector: <span id="iv-result"></span></p>
+        <p>Encrypted Memo Bytes: <span id="encrypt-note-result"></span></p>
+    </section>
+
+</body>
+</html>

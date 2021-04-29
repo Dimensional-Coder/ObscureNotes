@@ -4,45 +4,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="external/bcrypt.js"></script>
-    <script type="module" src="notes-main.js"></script>
-
     <title>Document</title>
+
+    <link rel="stylesheet" href="/css/test.css">
+    <script src="/js/test.js"></script>
 </head>
 <body>
-    <h2>Enter your keyphrase</h2>
-    <label for="key">
-        Key
-        <input type="text" name="key" id="key-input">
-    </label>
+    
+    <div class='main-container'>
+        <section id='memos-title'>
+            <h1>Obscure Notes</h1>
+            <p class='main-subtitle'>Anonymous storage of memos and ideas.</p>
+        </section>
 
-    <button type="button" id="key-submit-btn">Get memos</button>
-
-    <h2>Memos</h2>
-    <section id="notes-section">
-        <div class="notes-container" id="notes-container-01">
-            <input class="memo-input" id="memo-input-01" name="memo-input-01">
-            <button type="button" class="memo-update-btn" id="memo-update-btn-01">Update memo</button>
-            <button type="button" class="memo-delete-btn" id="memo-update-btn-01">Delete memo</button>
+        <section id='memos-start'>
+            <p>Get started by entering a secret password</p>
+            <!-- TODO: Make this input auto resize -->
+            <!-- Autoresizing idea: https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize-->
+            <input type="text" id="memos-keyphrase-input" placeholder="Key">
+            <button id="key-submit-btn" type="button" class="memos-btn">Get Started</button>
+        </section>
+    </div>
+    
+    <!-- Background animation, for aesthetic purposes. -->
+    <section id='memos-bg-animation'>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-0'>
+            <span class='memos-bg-box-text'></span>
         </div>
 
-        <label for="new-memo">
-            New memo
-            <input type="text" name="new-memo" id="new-memo-input">
-        </label>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-1'>
+            <span class='memos-bg-box-text'></span>
+        </div>
 
-        <button type="button" id="memo-submit-btn">Submit memo</button>
+        <div class='memos-box memos-bg-box' id='memos-bg-box-2'>
+            <span class='memos-bg-box-text'></span>
+        </div>
+
+        <div class='memos-box memos-bg-box' id='memos-bg-box-3'>
+            <span class='memos-bg-box-text'></span>
+        </div>
     </section>
-
-    <h2>[DEBUG] Encrypt Info</h2>
-    <section>
-        <p>Key Salt: <span id="salt-result"></span></p>
-        <p>(Weakly) Hashed Key: <span id="hash-result"></span></p>
-        <p>(Bcrypt) Encrypted Key: <span id="encrypt-key-result"></span></p>
-        <p>Aes Initialization Vector: <span id="iv-result"></span></p>
-        <p>Encrypted Memo Bytes: <span id="encrypt-note-result"></span></p>
-    </section>
-
 </body>
 </html>
