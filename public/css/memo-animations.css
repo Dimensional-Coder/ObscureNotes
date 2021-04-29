@@ -20,7 +20,7 @@
     }
 
     to{
-        left: 110vw;
+        left: 130vw;
         visibility: hidden;
     }
 }
@@ -28,7 +28,7 @@
 /* Animate a view screen coming to the main view */
 @keyframes screen-bootycall{
     from{
-        left: -110vw;
+        left: -130vw;
         visibility: hidden;
     }
 

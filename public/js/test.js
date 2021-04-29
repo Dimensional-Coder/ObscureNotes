@@ -28,6 +28,7 @@ function hideScreen(e){
     screen.style.animation = '';
 
     screen.removeEventListener('animationend', hideScreen);
+    console.log('Old screen hidden offscreen');
 }
 
 function anchorScreen(e){
@@ -37,27 +38,55 @@ function anchorScreen(e){
     screen.style.animation = '';
 
     screen.removeEventListener('animationend', anchorScreen);
-    console.log('anchor called')
+    console.log('New screen anchored in main view');
 }
 
-function startScreenTransition(e){
-    let splashScreen = document.getElementById('memo-splash-screen');
-    splashScreen.addEventListener('animationend', hideScreen);
+/**
+ * Transition from current screen (identified by 'screen-active' class)
+ * to the next screen.
+ */
+function triggerScreenTransition(e){
 
-    let appScreen = document.getElementById('memo-application-screen');
-    appScreen.addEventListener('animationend', anchorScreen);
+    //There should be only one "active" screen
+    let currentScreen = document.getElementsByClassName('screen-active')[0];
 
-    //Animations defined in memo-animations.css
-    splashScreen.style.animation = 'screen-begone 2s ease-in-out 1s 1';
-    appScreen.style.animation = 'screen-bootycall 2s ease-in-out 1s 1';
+    //Find next screen element, which will be the new screen
+    let allScreens = document.getElementsByClassName('memo-screen');
+    let currentIndex = null;
 
-    console.log('Registered animations');
+    for(let i=0; i<allScreens.length; i++){
+        if(allScreens[i]==currentScreen){
+            currentIndex=i;
+            break;
+        }
+    }
+
+    if(currentIndex == null){
+        console.error('Failed to find index of the current screen, can\'t transition');
+        console.error(currentIndex);
+        return;
+    }
+
+    let nextIndex = (currentIndex+1)%allScreens.length;
+    let nextScreen = allScreens[nextIndex];
+
+    //Trigger enter and exit animations for screens.
+    //Animations are defined in memo-animations.css
+    currentScreen.addEventListener('animationend', hideScreen);
+    nextScreen.addEventListener('animationend', anchorScreen);
+    currentScreen.style.animation = 'screen-begone 2s ease-in-out 1s 1';
+    nextScreen.style.animation = 'screen-bootycall 2s ease-in-out 1s 1';
+
+    console.log('Screen transition started');
 }
 
 function initViewScreens(){
 
     let startButton = document.getElementById('key-submit-btn');
-    startButton.addEventListener('click', startScreenTransition);
+    startButton.addEventListener('click', triggerScreenTransition);
+
+    let returnButton = document.getElementById('return-btn');
+    returnButton.addEventListener('click', triggerScreenTransition);
 }
 
 function init(){
