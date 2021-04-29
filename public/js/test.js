@@ -1,9 +1,73 @@
 
+class MemoBoxDrag{
+    //Memo element being dragged
+    element = null;
+
+    //X position clicked on the element
+    relativeX = null;
+
+    //Y position clicked on the element
+    relativeY = null;
+
+    constructor(element, offsetX, offsetY){
+        this.element=element;
+        this.relativeX=offsetX;
+        this.relativeY=offsetY;
+    }
+}
+
 function setRandomStartPosition(e){
     let newpos = Math.random()*100;
 
     let box = e.currentTarget;
     box.style.setProperty('left', `${newpos}vw`);
+}
+
+function startElementDrag(e){
+    let box = e.currentTarget;
+    currentDragTarget = new MemoBoxDrag(box, e.offsetX, e.offsetY);
+    document.body.addEventListener('mousemove', updateElementPos);
+    document.body.addEventListener('mouseup', endElementDrag);
+    document.body.classList.add('dragging');
+    
+    console.log('Started element drag');
+
+    console.log(`client coords: ${e.clientX},${e.clientY}`);
+    console.log(`offset coords: ${e.offsetX},${e.offsetY}`);
+}
+
+function updateElementPos(e){
+    let newX = e.clientX-currentDragTarget.relativeX;
+    let newY = e.clientY-currentDragTarget.relativeY;
+
+    currentDragTarget.element.style.left = `${newX}px`;
+    currentDragTarget.element.style.top = `${newY}px`;
+    //console.log(`Set pos to (${newX},${newY})`)
+}
+
+function endElementDrag(e){
+    if(currentDragTarget == null){
+        console.error('No drag target, ignoring endElementDrag event handler');
+        return;
+    }
+    currentDragTarget = null;
+
+    document.body.removeEventListener('mousemove', updateElementPos);
+    document.body.removeEventListener('mouseup', endElementDrag);
+    document.body.classList.remove('dragging');
+    console.log('Ended element drag');
+}
+
+//Initialize memo boxes with listeners to
+//be interactive
+function initMemoBoxes(){
+    let memoBoxes = document.getElementsByClassName('memos-box');
+
+    for(let box of memoBoxes){
+        box.addEventListener('mousedown', startElementDrag);
+    }
+
+    document.body.addEventListener('mouseup', endElementDrag);
 }
 
 //Initialize bg boxes to have random placement
@@ -84,6 +148,8 @@ function initViewScreens(){
 function init(){
     //initBgBoxes();
     initViewScreens();
+    initMemoBoxes();
 }
 
+let currentDragTarget = null;
 window.onload = init;

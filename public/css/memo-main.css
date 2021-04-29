@@ -31,14 +31,18 @@ body{
     font-family: "Segoe UI","Helvetica Neue","Helvetica",Arial,sans-serif;
 }
 
+/* Set cursor to "grabbing" when a memo is being dragged */
+body.dragging,
+body.dragging *
+{
+    cursor: grabbing !important;
+}
+
 /* Simple container to center main page content */
 #memo-splash-screen{
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    width: 100vw;
-    height: 100vh;
 }
 
 /*
@@ -52,16 +56,20 @@ A "screen" is a section that is one view in the application
         We can also animate it to move offscreen using left/top/etc.
     */
     position: absolute;
+    width: 100vw;
+    height: 100vh;
 }
 
 .screen-active{
     visibility: visible;
-    left: 0vh;
+    left: 0vw;
+    top: 0vh;
 }
 
 .screen-inactive{
     visibility: hidden;
-    left: 110vh;
+    left: 110vw;
+    top: 0vh;
 }
 
 /* Title */
@@ -154,20 +162,26 @@ button:active {
     outline: none;
 }
 
-
-/* Background animation styling */
-.memos-bg-box{
-
-    width: 200px;
-    height: 150px;
+.memos-box{
     padding: 15px;
+    position: absolute;
+
+    /* Default position */
+    left: 50vw;
+    top: 50vh;
 
     background-color: var(--memo-box-color);
     border-radius: 25% 10%;
     color: var(--memo-text-color);
+}
+
+/* Background animation styling */
+.memos-bg-box{
+    width: 200px;
+    height: 150px;
+
     opacity: 50%;
 
-    position: absolute;
     top: -30vh;
     z-index: -3;
 

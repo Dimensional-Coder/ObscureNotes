@@ -11,7 +11,7 @@
 </head>
 <body>
     
-    <section class='memo-screen screen-active' id='memo-splash-screen'>
+    <section class='memo-screen screen-inactive' id='memo-splash-screen'>
         <section id='memos-title'>
             <h1>Obscure Notes</h1>
             <p class='main-subtitle'>Anonymous storage of memos and ideas.</p>
@@ -45,11 +45,18 @@
         </section>
     </section>
 
-    <section class='memo-screen screen-inactive' id='memo-application-screen'>
+    <section class='memo-screen screen-active' id='memo-application-screen'>
         <button type='button' class='memos-btn memo-back-btn' id='return-btn'>
             <div class='back-arrow'></div>
         </button>
-        
+
+        <button type='button' class='memos-btn' id='add-btn'>
+            Add (not implemented yet)
+        </button>
+
+        <div class='memos-box'>
+            <textarea name="" id="" cols="30" rows="10"></textarea>
+        </div>
     </section>
     
     
