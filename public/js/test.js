@@ -29,7 +29,7 @@ function startElementDrag(e){
     document.body.addEventListener('mousemove', updateElementPos);
     document.body.addEventListener('mouseup', endElementDrag);
     document.body.classList.add('dragging');
-    
+
     console.log('Started element drag');
 
     console.log(`client coords: ${e.clientX},${e.clientY}`);
@@ -58,16 +58,26 @@ function endElementDrag(e){
     console.log('Ended element drag');
 }
 
+//For use with input elements on a memo box,
+//to prevent dragging while trying to interact
+//with it
+function interceptDrag(e){
+    //Stop event from bubbling up
+    e.stopPropagation();
+}
+
 //Initialize memo boxes with listeners to
 //be interactive
 function initMemoBoxes(){
     let memoBoxes = document.getElementsByClassName('memos-box');
-
     for(let box of memoBoxes){
         box.addEventListener('mousedown', startElementDrag);
     }
 
-    document.body.addEventListener('mouseup', endElementDrag);
+    let textAreas = document.getElementsByClassName('memo-input-container');
+    for(let t of textAreas){
+        t.addEventListener('mousedown', interceptDrag, true);
+    }
 }
 
 //Initialize bg boxes to have random placement

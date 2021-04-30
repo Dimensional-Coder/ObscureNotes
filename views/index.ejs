@@ -11,6 +11,7 @@
 </head>
 <body>
     
+    <!-- Splash screen -->
     <section class='memo-screen screen-inactive' id='memo-splash-screen'>
         <section id='memos-title'>
             <h1>Obscure Notes</h1>
@@ -45,6 +46,7 @@
         </section>
     </section>
 
+    <!-- Main application screen -->
     <section class='memo-screen screen-active' id='memo-application-screen'>
         <button type='button' class='memos-btn memo-back-btn' id='return-btn'>
             <div class='back-arrow'></div>
@@ -55,7 +57,10 @@
         </button>
 
         <div class='memos-box'>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <div class='memo-input-container'>
+                <textarea name="memo-input-01" id="memo-input-01"
+                    class='memo-input' cols="30" rows="10"></textarea>
+            </div>
         </div>
     </section>
     

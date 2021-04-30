@@ -19,6 +19,8 @@
 
     --memo-button-color: #7F95D1;
     --memo-button-text-color: tbd;
+
+    --memo-input-color: #ffffff21;
 }
 
 body{
@@ -191,6 +193,57 @@ button:active {
     animation-iteration-count: infinite;
 
     animation-delay: 0s;
+}
+
+/*
+.memo-input-container and .memo-input are a bit hacky.
+To have the input fit in the memos-box rounded border,
+memo-input-container is resizeable, and memo-input is
+scaled to a certain percentage I measured to be inside
+the rounded border most of the time.
+*/
+.memo-input-container{
+    width: 200px;
+    height: 150px;
+
+    border-radius: 25% 10%;
+    background-color: var(--memo-input-color);
+
+    /* flex box to center memo-input vertically */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    resize: both;
+    overflow: hidden;
+}
+
+.memo-input{
+    background-color: #00000000;
+    border: none;
+    width: 87%;
+    height: 82%;
+    overflow: hidden;
+    resize: none;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* box-sizing: content-box; */
+
+    /* border-radius: 25% 10%;
+    border: 5px solid transparent;
+    box-sizing: content-box;
+    background-color: var(--memo-input-color); */
+
+    color: var(--memo-text-color);
+
+    outline: none;
+    /* resize: both;
+    overflow: scroll;
+    text-align: left; */
+    /* overflow: visible; */
+    
+
 }
 
 .memos-bg-box-text::before{
