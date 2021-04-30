@@ -1,11 +1,10 @@
 
-/*
-Use ::before content hack to simulate typing as
-an animation. Separate file since this is so darn
-big.
+/***********************************************/
+/*** A text animation that's comically large ***/
+/***********************************************/
 
-This file was generated using a script.
-*/
+/* Hack using ::before selector to simulate typing as
+an animation. This file was generated using a script. */
 @keyframes populate-text{
     0%{content:"";}
     1%{content:"*";}
