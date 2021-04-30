@@ -169,10 +169,10 @@ function triggerScreenTransition(e){
 
 function initViewScreens(){
 
-    let startButton = document.getElementById('key-submit-btn');
+    let startButton = document.getElementById('memos-start-btn');
     startButton.addEventListener('click', triggerScreenTransition);
 
-    let returnButton = document.getElementById('return-btn');
+    let returnButton = document.getElementById('memos-return-btn');
     returnButton.addEventListener('click', triggerScreenTransition);
 }
 

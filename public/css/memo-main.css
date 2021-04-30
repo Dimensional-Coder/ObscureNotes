@@ -1,7 +1,11 @@
 
 @import './memo-animations.css';
+@import './memo-drawings.css';
 
-/* Color scheme created with https://coolors.co/generate */
+/********************************************************/
+/***          Obscure Notes color palette             ***/
+/*** Palette created with https://coolors.co/generate ***/
+/********************************************************/
 :root {
     /* "Oxford blue" */
     --main-bg-color: #010728;
@@ -23,6 +27,9 @@
     --memo-input-color: #ffffff21;
 }
 
+/***********************/
+/*** General styling ***/
+/***********************/
 body{
     overflow: hidden;
     background-color: var(--main-bg-color);
@@ -40,23 +47,16 @@ body.dragging *
     cursor: grabbing !important;
 }
 
-/* Simple container to center main page content */
-#memo-splash-screen{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 
-/*
-A "screen" is a section that is one view in the application
-(this is a single page application)
-*/
+/**********************/
+/*** Screen styling ***/
+/**********************/
+
+/* A "screen" is a section that is one view in the application */
 .memo-screen{
-    /*
-        position: absolute means all child elements with
-        position: absolute also get moved with this element.
-        We can also animate it to move offscreen using left/top/etc.
-    */
+    /* position: absolute means all child elements with
+       position: absolute also get moved with this element.
+       We can also animate it to move offscreen using left/top/etc */
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -74,19 +74,73 @@ A "screen" is a section that is one view in the application
     top: 0vh;
 }
 
+/*****************************/
+/*** Splash screen styling ***/
+/*****************************/
+
+/* Simple container to center main page content */
+#memo-splash-screen{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#memos-start-key-input{
+    /* Remove default browser styling */
+    appearance: none;
+
+    box-shadow: none;
+    text-align: center;
+    color: var(--memo-text-color);
+    background: linear-gradient(0deg, var(--memo-box-color), transparent, transparent, transparent);
+    border: none;
+    outline: none;
+}
+
+#memos-start-key-input:focus{
+    appearance: none;
+    border: none;
+    outline: none;
+}
+
 /* Title */
-h1{
+#memos-main-title{
     font-size: 5rem;
     font-weight: 350;
     margin-bottom: 10px;
 }
 
-.main-subtitle{
+#memos-main-subtitle{
     font-size: 1.5rem;
     font-weight: 300;
     color: var(--main-text-color-light);
     margin-top: 10px;
 }
+
+/* Configure background boxes to animate on splash screen */
+.memos-bg-box-text::before{
+    content: "";
+    margin: 10px;
+    overflow-wrap: anywhere;
+
+    /* animation: populate-text infinite 8s; */
+    animation-name: populate-text;
+    animation-iteration-count: infinite;
+}
+
+/* Default background box placement and timing */
+#memos-bg-box-0{left: 5vw; animation-delay: 4s;}
+#memos-bg-box-1{left: 25vw; animation-delay: 0s;}
+#memos-bg-box-2{left: 50vw; animation-delay: 6s;}
+#memos-bg-box-3{left: 75vw; animation-delay: 2s;}
+#memos-bg-box-0 .memos-bg-box-text::before{animation-duration: 6s;}
+#memos-bg-box-1 .memos-bg-box-text::before{animation-duration: 8s;}
+#memos-bg-box-2 .memos-bg-box-text::before{animation-duration: 4s;}
+#memos-bg-box-3 .memos-bg-box-text::before{animation-duration: 10s;}
+
+/**********************/
+/*** Button styling ***/
+/**********************/
 
 .memos-btn{
     /* Remove default browser styling */
@@ -105,7 +159,7 @@ h1{
     margin: 10px auto 10px auto;
 }
 
-#key-submit-btn{
+#memos-start-btn{
     display: block;
 }
 
@@ -120,31 +174,10 @@ button:active {
     margin: 0;
 }
 
-#return-btn{
+#memos-return-btn{
     position: absolute;
     left: 10px;
     top: 10px;
-}
-
-/* Draw a back arrow using pure css */
-.drawing-back-arrow{
-    width: 100%;
-    height: 100%;
-
-    background-color: var(--memo-text-color);
-
-    clip-path: polygon(
-        16.5% 50%, /* Arrow tip */
-        50% 16.5%, /* top */
-        56% 22.5%,
-        32.5% 45.8%,
-        83.3% 45.8%, /* Base of arrow top */
-        83.3% 54%, /* Base of arrow bottom */
-        32.5% 54%,
-        56% 77.5%,
-        50% 83.3%, /* bottom */
-        16.5% 50%
-    );
 }
 
 .memo-delete-btn{
@@ -160,30 +193,6 @@ button:active {
     top: 10%;
 }
 
-/* Draw an X using pure css */
-.drawing-x{
-    width: 100%;
-    height: 100%;
-
-    background-color: var(--memo-text-color);
-
-    clip-path: polygon(
-        8.5% 24.5%, /* top left, first point */
-        24.5% 8.5%,
-        50% 34.5%, /* middle top point */
-        75.5% 8.5%,
-        91.5% 24.5%,
-        65.5% 50%, /* right middle point */
-        91.5% 75.5%,
-        75.5% 91.5%,
-        50% 65.5%, /* bottom middle point */
-        24.5% 91.5%,
-        8.5% 75.5%,
-        34.5% 50%, /* left middle point */
-        8.5% 24.5%
-    );
-}
-
 .memo-add-btn{
     width: 50px;
     height: 50px;
@@ -197,47 +206,9 @@ button:active {
     bottom: 10px;
 }
 
-/* Draw a plus using pure css */
-.drawing-plus{
-    width: 100%;
-    height: 100%;
-
-    background-color: var(--memo-text-color);
-
-    clip-path: polygon(
-        16.5% 55%, /* left */
-        16.5% 45%,
-        45% 45%,
-        45% 16.5%, /* top */
-        55% 16.5%,
-        55% 45%,
-        83.5% 45%, /* right */
-        83.5% 55%,
-        55% 55%,
-        55% 83.5%, /* bottom */
-        45% 83.5%,
-        45% 55%,
-        16.5% 55%
-    );
-}
-
-#memos-keyphrase-input{
-    /* Remove default browser styling */
-    appearance: none;
-
-    box-shadow: none;
-    text-align: center;
-    color: var(--memo-text-color);
-    background: linear-gradient(0deg, var(--memo-box-color), transparent, transparent, transparent);
-    border: none;
-    outline: none;
-}
-
-#memos-keyphrase-input:focus{
-    appearance: none;
-    border: none;
-    outline: none;
-}
+/********************/
+/*** Memo styling ***/
+/********************/
 
 .memos-box{
     padding: 15px;
@@ -326,24 +297,4 @@ the rounded border most of the time.
     
 
 }
-
-.memos-bg-box-text::before{
-    content: "";
-    margin: 10px;
-    overflow-wrap: anywhere;
-
-    /* animation: populate-text infinite 8s; */
-    animation-name: populate-text;
-    animation-iteration-count: infinite;
-}
-
-/* Default bg box placement and timing */
-#memos-bg-box-0{left: 5vw; animation-delay: 4s;}
-#memos-bg-box-1{left: 25vw; animation-delay: 0s;}
-#memos-bg-box-2{left: 50vw; animation-delay: 6s;}
-#memos-bg-box-3{left: 75vw; animation-delay: 2s;}
-#memos-bg-box-0 .memos-bg-box-text::before{animation-duration: 6s;}
-#memos-bg-box-1 .memos-bg-box-text::before{animation-duration: 8s;}
-#memos-bg-box-2 .memos-bg-box-text::before{animation-duration: 4s;}
-#memos-bg-box-3 .memos-bg-box-text::before{animation-duration: 10s;}
 
