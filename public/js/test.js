@@ -66,6 +66,27 @@ function interceptDrag(e){
     e.stopPropagation();
 }
 
+function addMemo(e){
+    //stub
+    console.log('Add memo');
+    e.stopPropagation();
+}
+
+function deleteMemo(e){
+    //stub
+    console.log('Delete memo');
+    e.stopPropagation();
+}
+
+function initMemoButtons(){
+    let deleteBtns = document.getElementsByClassName('memo-delete-btn');
+    deleteBtns[0].addEventListener('click', deleteMemo);
+    deleteBtns[0].addEventListener('mousedown', interceptDrag);
+
+    let addBtns = document.getElementsByClassName('memo-add-btn');
+    addBtns[0].addEventListener('click', addMemo);
+}
+
 //Initialize memo boxes with listeners to
 //be interactive
 function initMemoBoxes(){
@@ -159,6 +180,7 @@ function init(){
     //initBgBoxes();
     initViewScreens();
     initMemoBoxes();
+    initMemoButtons();
 }
 
 let currentDragTarget = null;

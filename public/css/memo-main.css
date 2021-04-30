@@ -117,6 +117,7 @@ button:active {
     width: 50px;
     height: 50px;
     padding: 0;
+    margin: 0;
 }
 
 #return-btn{
@@ -126,9 +127,11 @@ button:active {
 }
 
 /* Draw a back arrow using pure css */
-.back-arrow{
+.drawing-back-arrow{
     width: 100%;
     height: 100%;
+
+    background-color: var(--memo-text-color);
 
     clip-path: polygon(
         16.5% 50%, /* Arrow tip */
@@ -142,8 +145,80 @@ button:active {
         50% 83.3%, /* bottom */
         16.5% 50%
     );
+}
+
+.memo-delete-btn{
+    width: 15px;
+    height: 15px;
+    padding: 0px;
+    background-color: transparent;
+
+    border: none;
+    position: absolute;
+    margin: 0px;
+    right: 0px;
+    top: 10%;
+}
+
+/* Draw an X using pure css */
+.drawing-x{
+    width: 100%;
+    height: 100%;
 
     background-color: var(--memo-text-color);
+
+    clip-path: polygon(
+        8.5% 24.5%, /* top left, first point */
+        24.5% 8.5%,
+        50% 34.5%, /* middle top point */
+        75.5% 8.5%,
+        91.5% 24.5%,
+        65.5% 50%, /* right middle point */
+        91.5% 75.5%,
+        75.5% 91.5%,
+        50% 65.5%, /* bottom middle point */
+        24.5% 91.5%,
+        8.5% 75.5%,
+        34.5% 50%, /* left middle point */
+        8.5% 24.5%
+    );
+}
+
+.memo-add-btn{
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+}
+
+#memo-main-add-btn{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+/* Draw a plus using pure css */
+.drawing-plus{
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--memo-text-color);
+
+    clip-path: polygon(
+        16.5% 55%, /* left */
+        16.5% 45%,
+        45% 45%,
+        45% 16.5%, /* top */
+        55% 16.5%,
+        55% 45%,
+        83.5% 45%, /* right */
+        83.5% 55%,
+        55% 55%,
+        55% 83.5%, /* bottom */
+        45% 83.5%,
+        45% 55%,
+        16.5% 55%
+    );
 }
 
 #memos-keyphrase-input{
@@ -174,6 +249,9 @@ button:active {
 
     background-color: var(--memo-box-color);
     border-radius: 25% 10%;
+    /* alternatively, fixed border radius for better scaling */
+    /* border-radius: 50px 20px; */
+
     color: var(--memo-text-color);
 }
 
@@ -207,6 +285,9 @@ the rounded border most of the time.
     height: 150px;
 
     border-radius: 25% 10%;
+    /* alternatively, fixed border radius for better scaling */
+    /* border-radius: 50px 20px; */
+
     background-color: var(--memo-input-color);
 
     /* flex box to center memo-input vertically */
