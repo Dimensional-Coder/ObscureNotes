@@ -30,6 +30,9 @@
     --memo-button-text-color: tbd;
 
     --memo-input-color: #ffffff21;
+
+    --box-static-border: 50px 20px;
+    --box-scaling-border: 25% 10%;
 }
 
 /***********************/
@@ -194,8 +197,8 @@ button:active {
     border: none;
     position: absolute;
     margin: 0px;
-    right: 0px;
-    top: 10%;
+    right: 6px;
+    top: 6px;
 }
 
 .memo-add-btn{
@@ -224,9 +227,11 @@ button:active {
     top: 50vh;
 
     background-color: var(--memo-box-color);
-    border-radius: 25% 10%;
-    /* alternatively, fixed border radius for better scaling */
-    /* border-radius: 50px 20px; */
+    /* scaling border, a bit difficult to fit other elements */
+    /* border-radius: var(--box-scaling-border); */
+
+    /* fixed border radius */
+    border-radius: var(--box-static-border);
 
     color: var(--memo-text-color);
 }
