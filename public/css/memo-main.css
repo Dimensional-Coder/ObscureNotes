@@ -254,57 +254,99 @@ button:active {
     animation-delay: 0s;
 }
 
-/*
-.memo-input-container and .memo-input are a bit hacky.
-To have the input fit in the memos-box rounded border,
-memo-input-container is resizeable, and memo-input is
-scaled to a certain percentage I measured to be inside
-the rounded border most of the time.
-*/
 .memo-input-container{
-    width: 200px;
-    height: 150px;
+    /* Nothing.... yet */
+    /* resize: both;
+    overflow: hidden; */
 
-    border-radius: 25% 10%;
-    /* alternatively, fixed border radius for better scaling */
-    /* border-radius: 50px 20px; */
+    /* Eliminate whitespace from inline-block */
+    /* font-size: 0; */
 
-    background-color: var(--memo-input-color);
-
-    /* flex box to center memo-input vertically */
+    /* Got sick of trying to manually do stretching and vertical alignment */
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    resize: both;
-    overflow: hidden;
+    align-items: stretch;
 }
 
 .memo-input{
-    background-color: #00000000;
+    display: inline-block;
+
+    border-radius: var(--box-static-border);
+    background-color: var(--memo-input-color);
+
     border: none;
-    width: 87%;
-    height: 82%;
+    min-width: 75px;
+    min-height: 50px;
+
+    resize: both;
+
+    /* top | right | bottom | left */
+    padding: 15px 16px 15px 15px;
+    /* margin: 15px 10px 15px 15px; */
+
     overflow: hidden;
-    resize: none;
-    margin-left: auto;
-    margin-right: auto;
 
     /* box-sizing: content-box; */
-
-    /* border-radius: 25% 10%;
-    border: 5px solid transparent;
-    box-sizing: content-box;
-    background-color: var(--memo-input-color); */
 
     color: var(--memo-text-color);
 
     outline: none;
-    /* resize: both;
-    overflow: scroll;
-    text-align: left; */
-    /* overflow: visible; */
-    
-
 }
 
+/*************************/
+/*** Scrollbar styling ***/
+/*************************/
+
+.memo-scrollbar{
+    /* Take up no space on the dom, and displace it to
+    overlap with the textarea element. Child elements
+    will be drawn normally. */
+    width: 0px;
+    right: 22px;
+    position: relative;
+
+    /* align scrollbar box to be vertically within textarea */
+    margin-top: 8px;
+    margin-bottom: 27px;
+
+    /* height stretched automatically by flexbox */
+    /* height: 100%; */
+
+    margin-left: 5px;
+
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.memo-scrollbar-component{
+    margin: 0;
+    padding: 0;
+
+    /* Width must be odd for scrollbar top/bottom to display evenly */
+    width: 9px;
+    display: inline;
+}
+
+.memo-scrollbar-component.drawing-scrollbar-top{
+    height: 4px;
+}
+
+.memo-scrollbar-component.drawing-scrollbar-bottom{
+    height: 4px;
+}
+
+.memo-scrollbar-component.drawing-scrollbar-middle{
+    /* Height to be computed by js */
+
+    /* Hack. Width set to be 1 less than memo-scrollbar-component
+    since the circles drawn in scrollbar-top and scrollbar-bottom
+    are 1 pixel too small (at any width) */
+    width: 8px;
+}
+
+.scrollbar-inactive{
+    visibility: hidden;
+}
+
+.scrollbar-active{
+    visibility: visible;
+}

@@ -71,3 +71,33 @@
         16.5% 55%
     );
 }
+
+/* Scrollbar top */
+.drawing-scrollbar-top{
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--memo-text-color);
+
+    clip-path: circle(50% at 50% 100%)
+}
+
+/* This one's easy, it's just a rectangle */
+.drawing-scrollbar-middle{
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--memo-text-color);
+
+    /* clip-path: inset(0 0 0 0); */
+}
+
+/* Scrollbar bottom */
+.drawing-scrollbar-bottom{
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--memo-text-color);
+
+    clip-path: circle(50% at 50% 0%)
+}
