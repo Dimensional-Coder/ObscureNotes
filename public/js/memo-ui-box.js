@@ -72,6 +72,7 @@ export class UiMemoBox{
         //Current position in overflow determines scrollbar position
         let maxScrollPos = input.scrollHeight-input.clientHeight;
         let curScrollPos = input.scrollTop;
+        
         let scrollPercent = curScrollPos/maxScrollPos;
 
         //Another way to get scrollPercent, but it seems to be buggy on firefox
@@ -87,17 +88,23 @@ export class UiMemoBox{
         let scrollContainerHeight = parseInt(window.getComputedStyle(scrollbar).height);
         let scrollTopHeight = parseInt(window.getComputedStyle(scrollTopElem).height);
         //Update middleelem early since it may have grown and we need an updated number
-        scrollMiddleElem.style.height = `${scrollbarSize*100}%`;
+        //scrollMiddleElem.style.height = `${scrollbarSize*100}%`;
+        let maxMiddleHeight = scrollContainerHeight - scrollTopHeight - scrollTopHeight - 1;
+        scrollMiddleElem.style.height = `${maxMiddleHeight*scrollbarSize}px`;
         let scrollMiddleHeight = parseInt(window.getComputedStyle(scrollMiddleElem).height);
 
         //Use margin to position scrollbar based on amount of free space
-        let freeSpace = scrollContainerHeight - scrollMiddleHeight - scrollTopHeight - scrollTopHeight;
+        let freeSpace = scrollContainerHeight - scrollMiddleHeight - scrollTopHeight - scrollTopHeight - 1;
         let marginAmount = freeSpace * scrollPercent;
 
         //TODO: Fix bug where scrollTop only changes on the second
         //character of a newline. Also a bug with the margin on firefox while typing...
-        console.log(`freeSpace(${freeSpace}), scrollPercent(${scrollPercent}), scrollbarSize(${scrollbarSize})`);
-        console.log(`input.scrollTop(${input.scrollTop})`);
+        // console.log(`freeSpace(${freeSpace}), scrollPercent(${scrollPercent}), scrollbarSize(${scrollbarSize})`);
+        // console.log(`input.clientHeight(${input.clientHeight}), input.scrollHeight(${input.scrollHeight})`);
+        // console.log(`scrollContainerHeight(${scrollContainerHeight}), scrollMiddleHeight(${scrollMiddleHeight}), scrollTopHeight(${scrollTopHeight})`);
+
+
+        // console.log(`input.scrollTop(${input.scrollTop})`);
 
         scrollTopElem.style.marginTop = `${marginAmount}px`;
         scrollbar.classList.remove('scrollbar-inactive');
