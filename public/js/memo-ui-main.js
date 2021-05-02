@@ -22,6 +22,7 @@ function initViewScreens(){
     
     let startButton = document.getElementById('memos-start-btn');
     startButton.addEventListener('click', UiMemoScreen.triggerScreenTransition);
+    startButton.addEventListener('click', UiMemoBox.populateMemos);
 
     let returnButton = document.getElementById('memos-return-btn');
     returnButton.addEventListener('click', UiMemoScreen.triggerScreenTransition);

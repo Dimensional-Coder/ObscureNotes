@@ -4,11 +4,10 @@
 //                  functions for ObscureNotes.
 //
 
-import { MemoConvert } from './notes-convert.js';
+import { MemoConvert } from './memo-convert.js';
 
 //bcrypt.js library must be included in a script tag
 var bcrypt = window.dcodeIO.bcrypt;
-
 
 //How short the hashed key will be truncated to
 const HASH_LENGTH = 5;
@@ -29,6 +28,8 @@ const AES_BYTE_LENGTH = AES_BIT_LENGTH/8;
 const SALT_BYTE_LENGTH = 16;
 
 export class MemoCrypto{
+
+
     
     /*
     Generate an aes key from a raw string key (password).
