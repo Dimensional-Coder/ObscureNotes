@@ -72,8 +72,23 @@ export class UiMemoBox{
         input.name = `newmemo-input-${newid}`;
         input.id = `newmemo-input-${newid}`;
         
-        console.log('Meme element created');
+        console.log('Memo element created');
         return newMemoBox;
+    }
+
+    static async deleteMemo(memoBox){
+        let idIndex = memoBox.id.lastIndexOf('-') + 1;
+        let memoid = memoBox.id.substring(idIndex, memoBox.id.length);
+
+        let key = getKey();
+
+        let keyHash = await MemoCrypto.hashKey(key);
+        let salt = await MemoApi.getSalt(keyHash);
+        let encryptedKey = await MemoCrypto.encryptKey(key, salt);
+
+        let res = await MemoApi.deleteMemo(encryptedKey, memoid);
+
+        console.log(`Memo deleted from server ${memoid}`);
     }
 
     static deleteMemoElement(memoBox){
@@ -89,11 +104,12 @@ export class UiMemoBox{
         e.stopPropagation();
     }
     
-    static deleteMemo(e){
+    static async deleteMemoHandler(e){
         
         let deleteBtn = e.currentTarget;
         let box = deleteBtn.closest('.memos-box');
 
+        await UiMemoBox.deleteMemo(box);
         UiMemoBox.deleteMemoElement(box);
 
         e.stopPropagation();
@@ -231,7 +247,7 @@ export class UiMemoBox{
         input.addEventListener('input', UiMemoBox.scheduleSaveMemo);
 
         let deleteBtn = box.getElementsByClassName('memo-delete-btn')[0];
-        deleteBtn.addEventListener('click', UiMemoBox.deleteMemo);
+        deleteBtn.addEventListener('click', UiMemoBox.deleteMemoHandler);
         deleteBtn.addEventListener('mousedown', UiMemoDrag.interceptDrag);
 
         let scrollbar = inputContainer.getElementsByClassName('memo-scrollbar')[0];
