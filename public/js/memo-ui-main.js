@@ -8,6 +8,7 @@
 import {UiMemoDrag} from './memo-ui-drag.js';
 import {UiMemoScreen} from './memo-ui-screen.js';
 import {UiMemoBox} from './memo-ui-box.js';
+import {UiMemoScrollbar} from './memo-ui-scrollbar.js';
 
 const MEMO_DEBUG = true;
 
@@ -22,15 +23,16 @@ function initMemoScrollbar(){
     let textAreas = document.getElementsByClassName('memo-input');
 
     //Box resize
-    let memoResizeObserver = new ResizeObserver(UiMemoBox.inputResizeHandler);
+    let memoResizeObserver = new ResizeObserver(UiMemoScrollbar.inputResizeHandler);
     memoResizeObserver.observe(textAreas[0]);
 
     //Text area input
-    textAreas[0].addEventListener('input', UiMemoBox.inputChangeHandler);
+    textAreas[0].addEventListener('keydown', UiMemoScrollbar.inputChangeHandler);
+    //TODO: Page up/pagedown
 
     //Scrollbar drag
     let scrollbars = document.getElementsByClassName('memo-scrollbar');
-    scrollbars[0].addEventListener('mousedown', UiMemoBox.scrollbarDragStart);
+    scrollbars[0].addEventListener('mousedown', UiMemoScrollbar.scrollbarDragStart);
 
     //Scroll wheel
     //TODO
