@@ -199,8 +199,9 @@ export class UiMemoBox{
     static clearMemos(){
         let boxContainer = document.getElementById('memo-main-box-container');
         let boxes = boxContainer.getElementsByClassName('memos-box');
-
-        for(let box of boxes){
+        
+        for(let i=boxes.length-1; i>=0; i--){
+            let box = boxes[i];
             UiMemoBox.deleteMemoElement(box);
         }
 
