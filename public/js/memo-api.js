@@ -3,7 +3,7 @@
 //notes-api.js - Module to serve as a wrapper for api calls.
 //
 
-export class NotesApi{
+export class MemoApi{
     /**
      * Get the salt tied to this key's hash.
      * 

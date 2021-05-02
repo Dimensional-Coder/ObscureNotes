@@ -4,7 +4,7 @@
 //                   convert between hex string, bytes, and utf8 strings.
 //
 
-export class NotesConvert{
+export class MemoConvert{
     //Convert ArrayBuffer bytes to a hex string.
     //ie arraybuffer [255, 255] => string 'ffff'
     static arrayBufferToHexString(data){

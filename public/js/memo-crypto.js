@@ -4,7 +4,7 @@
 //                  functions for ObscureNotes.
 //
 
-import { NotesConvert } from './notes-convert.js';
+import { MemoConvert } from './notes-convert.js';
 
 //bcrypt.js library must be included in a script tag
 var bcrypt = window.dcodeIO.bcrypt;
@@ -28,7 +28,7 @@ const AES_BYTE_LENGTH = AES_BIT_LENGTH/8;
 //For generating aes key
 const SALT_BYTE_LENGTH = 16;
 
-export class NotesCrypto{
+export class MemoCrypto{
     
     /*
     Generate an aes key from a raw string key (password).
@@ -36,7 +36,7 @@ export class NotesCrypto{
     */
     static async genAesKey(plaintextKey, salt){
 
-        let saltData = NotesConvert.stringToArrayBuffer(salt, SALT_BYTE_LENGTH);
+        let saltData = MemoConvert.stringToArrayBuffer(salt, SALT_BYTE_LENGTH);
         let pbkdf2Params = {
             name: 'PBKDF2',
             hash: 'SHA-512',
@@ -50,7 +50,7 @@ export class NotesCrypto{
         };
 
         //Turn text key into a cryptoKey as input
-        let keyData = NotesConvert.stringToArrayBuffer(plaintextKey, AES_BYTE_LENGTH);
+        let keyData = MemoConvert.stringToArrayBuffer(plaintextKey, AES_BYTE_LENGTH);
         let inputCryptoKey = await window.crypto.subtle.importKey(
             'raw', keyData, {
                 name: "PBKDF2"
@@ -74,9 +74,9 @@ export class NotesCrypto{
      *              - Initialization vector as a hex string
      */
     static async encryptNote(key, salt, note){
-        let noteData = NotesConvert.stringToArrayBuffer(note);
+        let noteData = MemoConvert.stringToArrayBuffer(note);
 
-        let cryptoKey = await NotesCrypto.genAesKey(key, salt);
+        let cryptoKey = await MemoCrypto.genAesKey(key, salt);
 
         //Initialization vector for AES
         let iv = window.crypto.getRandomValues(new Uint8Array(12));
@@ -86,8 +86,8 @@ export class NotesCrypto{
             iv: iv
         }, cryptoKey, noteData);
 
-        let encryptedNote = NotesConvert.arrayBufferToHexString(encryptedData);
-        let ivhexstring = NotesConvert.arrayBufferToHexString(iv);
+        let encryptedNote = MemoConvert.arrayBufferToHexString(encryptedData);
+        let ivhexstring = MemoConvert.arrayBufferToHexString(iv);
 
         return Promise.resolve([encryptedNote, ivhexstring]);
     }
@@ -102,17 +102,17 @@ export class NotesCrypto{
      * @returns The decrypted note as a utf8 string
      */
     static async decryptNote(key, salt, ivHexString, noteHexString){
-        let noteData = NotesConvert.stringHexToArrayBuffer(noteHexString);
-        let iv = NotesConvert.stringHexToArrayBuffer(ivHexString);
+        let noteData = MemoConvert.stringHexToArrayBuffer(noteHexString);
+        let iv = MemoConvert.stringHexToArrayBuffer(ivHexString);
 
-        let cryptoKey = await NotesCrypto.genAesKey(key, salt);
+        let cryptoKey = await MemoCrypto.genAesKey(key, salt);
 
         let decryptedData = await window.crypto.subtle.decrypt({
             name: "AES-GCM",
             iv: iv
         }, cryptoKey, noteData);
 
-        let decryptedNote = NotesConvert.arrayBufferToString(decryptedData);
+        let decryptedNote = MemoConvert.arrayBufferToString(decryptedData);
 
         return Promise.resolve(decryptedNote);
     }
@@ -138,11 +138,11 @@ export class NotesCrypto{
      * @returns A truncated hash of the key as a hex string
      */
     static async hashKey(key){
-        let data = NotesConvert.stringToArrayBuffer(key);
+        let data = MemoConvert.stringToArrayBuffer(key);
 
         let digestData = await crypto.subtle.digest('SHA-1', data);
 
-        let digestStr = NotesConvert.arrayBufferToHexString(digestData);
+        let digestStr = MemoConvert.arrayBufferToHexString(digestData);
 
         let trimmed = digestStr.substring(0, HASH_LENGTH);
 

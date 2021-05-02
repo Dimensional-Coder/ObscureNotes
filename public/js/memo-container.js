@@ -3,7 +3,7 @@
  * Simple container object to store a
  * note container dom element actively on the page.
  */
-export class NotesContainer{
+export class MemoContainer{
     noteObject = null;
     noteContainer = null;
 

@@ -4,11 +4,11 @@
 //
 
 //Application library functions
-import { NotesApi } from './notes-api.js';
-import { NotesConvert } from './notes-convert.js';
-import { NotesCrypto } from './notes-crypto.js';
+import { MemoApi } from './memo-api.js';
+import { MemoConvert } from './memo-convert.js';
+import { MemoCrypto } from './memo-crypto.js';
 
-import { NotesContainer } from './notes-container.js';
+import { MemoContainer } from './memo-container.js';
 
 const NOTES_DEBUG = true;
 
@@ -30,21 +30,21 @@ async function runMemoEncrypt(event, update=false){
     }
 
     try{
-        let keyHash = await NotesCrypto.hashKey(key);
-        let salt = await NotesApi.getSalt(keyHash);
-        let encryptedKey = await NotesCrypto.encryptKey(key, salt);
+        let keyHash = await MemoCrypto.hashKey(key);
+        let salt = await MemoApi.getSalt(keyHash);
+        let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
-        let [encryptedNote, iv] = await NotesCrypto.encryptNote(key,salt,memotext);
+        let [encryptedNote, iv] = await MemoCrypto.encryptNote(key,salt,memotext);
 
         if(!update){
-            let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
+            let res = await MemoApi.createMemo(encryptedKey, encryptedNote, iv);
             console.log(res);
 
             //TODO: fix bug, check if "first" here
             insertMemo(res._id, memotext, true);
             document.getElementById('new-memo-input').value = "";
         }else{
-            let res = await NotesApi.updateMemo(encryptedKey, memoid, encryptedNote, iv);
+            let res = await MemoApi.updateMemo(encryptedKey, memoid, encryptedNote, iv);
             console.log(res);
         }
 
@@ -79,11 +79,11 @@ async function runMemoDelete(event){
 
     let key = document.getElementById('key-input').value;
 
-    let keyHash = await NotesCrypto.hashKey(key);
-    let salt = await NotesApi.getSalt(keyHash);
-    let encryptedKey = await NotesCrypto.encryptKey(key, salt);
+    let keyHash = await MemoCrypto.hashKey(key);
+    let salt = await MemoApi.getSalt(keyHash);
+    let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
-    let res = await NotesApi.deleteMemo(encryptedKey, memoid);
+    let res = await MemoApi.deleteMemo(encryptedKey, memoid);
 
     //Delete node in DOM
     let container = document.getElementById(`notes-container-${memoid}`);
@@ -138,11 +138,11 @@ function clearMemos(){
 async function populateMemos(){
     let key = document.getElementById('key-input').value;
 
-    let keyHash = await NotesCrypto.hashKey(key);
-    let salt = await NotesApi.getSalt(keyHash);
-    let encryptedKey = await NotesCrypto.encryptKey(key, salt);
+    let keyHash = await MemoCrypto.hashKey(key);
+    let salt = await MemoApi.getSalt(keyHash);
+    let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
-    let notes = await NotesApi.getMemos(encryptedKey);
+    let notes = await MemoApi.getMemos(encryptedKey);
     console.log(notes);
 
     clearMemos();
@@ -151,7 +151,7 @@ async function populateMemos(){
     for(let i=0; i<notes.length; i++){
         let note = notes[i];
         let decryptedNoteText = 
-            await NotesCrypto.decryptNote(key, salt, note.iv, note.memobytes);
+            await MemoCrypto.decryptNote(key, salt, note.iv, note.memobytes);
         
         insertMemo(note._id, decryptedNoteText, first);
         first=false;
@@ -175,9 +175,9 @@ function init(){
     //Provide access to my module functions
     //if we're debugging
     if(NOTES_DEBUG){
-        window.NotesApi = NotesApi;
-        window.NotesConvert = NotesConvert;
-        window.NotesCrypto = NotesCrypto;
+        window.MemoApi = MemoApi;
+        window.MemoConvert = MemoConvert;
+        window.MemoCrypto = MemoCrypto;
         window.bcrypt = dcodeIO.bcrypt;
         window.clearMemos = clearMemos;
     }
