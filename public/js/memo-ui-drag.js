@@ -25,6 +25,10 @@ class MemoBoxDrag{
 export class UiMemoDrag{
 
     static currentDragTarget = null;
+
+    /* z index counter to ensure any grabbed 
+    memo appears on the forefront */
+    static zIndexCounter = 1;
     
     static startElementDrag(e){
         let box = e.currentTarget;
@@ -32,6 +36,7 @@ export class UiMemoDrag{
         document.body.addEventListener('mousemove', UiMemoDrag.updateElementPos);
         document.body.addEventListener('mouseup', UiMemoDrag.endElementDrag);
         document.body.classList.add('dragging');
+        box.style.zIndex = UiMemoDrag.zIndexCounter++;
     
         console.log('Started element drag');
     }
@@ -42,7 +47,6 @@ export class UiMemoDrag{
     
         UiMemoDrag.currentDragTarget.element.style.left = `${newX}px`;
         UiMemoDrag.currentDragTarget.element.style.top = `${newY}px`;
-        //console.log(`Set pos to (${newX},${newY})`)
     }
     
     static endElementDrag(e){

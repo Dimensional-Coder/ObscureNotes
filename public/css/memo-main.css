@@ -180,6 +180,9 @@ button:active {
     height: 50px;
     padding: 0;
     margin: 0;
+
+    /* Ensure this hovers over any memo */
+    z-index: 10000000;
 }
 
 #memos-return-btn{
@@ -197,8 +200,8 @@ button:active {
     border: none;
     position: absolute;
     margin: 0px;
-    right: 6px;
-    top: 6px;
+    right: 7px;
+    top: 7px;
 }
 
 .memo-add-btn{
@@ -206,6 +209,9 @@ button:active {
     height: 50px;
     padding: 0;
     margin: 0;
+
+    /* Ensure this hovers over any memo */
+    z-index: 10000000;
 }
 
 #memo-main-add-btn{
@@ -217,6 +223,10 @@ button:active {
 /********************/
 /*** Memo styling ***/
 /********************/
+
+#memos-box-template{
+    visibility: hidden;
+}
 
 .memos-box{
     padding: 15px;
