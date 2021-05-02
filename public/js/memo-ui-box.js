@@ -74,6 +74,9 @@ export class UiMemoBox{
         let curScrollPos = input.scrollTop;
         let scrollPercent = curScrollPos/maxScrollPos;
 
+        //Another way to get scrollPercent, but it seems to be buggy on firefox
+        //let scrollPercent = (input.scrollTop + input.offsetHeight) / input.scrollHeight;
+
         //Proportion of element height to overflow height determines scrollbar scale
         let scrollbarSize = input.clientHeight/input.scrollHeight;
         
@@ -83,14 +86,20 @@ export class UiMemoBox{
         //Determine how much free space is in the scrollbar container
         let scrollContainerHeight = parseInt(window.getComputedStyle(scrollbar).height);
         let scrollTopHeight = parseInt(window.getComputedStyle(scrollTopElem).height);
+        //Update middleelem early since it may have grown and we need an updated number
+        scrollMiddleElem.style.height = `${scrollbarSize*100}%`;
         let scrollMiddleHeight = parseInt(window.getComputedStyle(scrollMiddleElem).height);
 
         //Use margin to position scrollbar based on amount of free space
         let freeSpace = scrollContainerHeight - scrollMiddleHeight - scrollTopHeight - scrollTopHeight;
         let marginAmount = freeSpace * scrollPercent;
 
+        //TODO: Fix bug where scrollTop only changes on the second
+        //character of a newline. Also a bug with the margin on firefox while typing...
+        console.log(`freeSpace(${freeSpace}), scrollPercent(${scrollPercent}), scrollbarSize(${scrollbarSize})`);
+        console.log(`input.scrollTop(${input.scrollTop})`);
+
         scrollTopElem.style.marginTop = `${marginAmount}px`;
-        scrollMiddleElem.style.height = `${scrollbarSize*100}%`;
         scrollbar.classList.remove('scrollbar-inactive');
         scrollbar.classList.add('scrollbar-active');
 
@@ -100,6 +109,14 @@ export class UiMemoBox{
     static inputResizeHandler(entries){
         let input = entries[0].target;
 
+        let scrollbar = input.closest('.memo-input-container')
+                        .getElementsByClassName('memo-scrollbar')[0];
+        
+        UiMemoBox.redrawMemoScrollbar(scrollbar);
+    }
+
+    static inputChangeHandler(e){
+        let input = e.currentTarget;
         let scrollbar = input.closest('.memo-input-container')
                         .getElementsByClassName('memo-scrollbar')[0];
         
@@ -164,8 +181,6 @@ export class UiMemoBox{
         let maxScrollPos = input.scrollHeight-input.clientHeight;
         input.scrollTop = maxScrollPos * scrollPercent;
 
-        console.log(`relativeNewY(${relativeNewY}), minY(${minY}), maxY(${maxY})`);
-        console.log(`scrollPercent(${scrollPercent}), maxScrollPos(${maxScrollPos})`);
         UiMemoBox.redrawMemoScrollbar(UiMemoBox.currentScrollDragTarget.scrollbar);
     }
 

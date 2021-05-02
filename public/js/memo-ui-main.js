@@ -19,14 +19,14 @@ const MEMO_DEBUG = true;
  *   - Scroll wheel
  */
 function initMemoScrollbar(){
-    //Box resize
     let textAreas = document.getElementsByClassName('memo-input');
 
+    //Box resize
     let memoResizeObserver = new ResizeObserver(UiMemoBox.inputResizeHandler);
     memoResizeObserver.observe(textAreas[0]);
 
     //Text area input
-    //TODO
+    textAreas[0].addEventListener('input', UiMemoBox.inputChangeHandler);
 
     //Scrollbar drag
     let scrollbars = document.getElementsByClassName('memo-scrollbar');
