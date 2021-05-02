@@ -6,6 +6,9 @@ import { MemoApi } from './memo-api.js';
 import { MemoConvert } from './memo-convert.js';
 import { MemoCrypto } from './memo-crypto.js';
 
+//How long to wait before saving a memo
+const SAVE_WAIT_TIME = 1000;
+
 //Random x pos on the current viewport
 function getRandomXPosition(forElement){
     let screen = document.getElementsByClassName('screen-active')[0];
@@ -35,6 +38,15 @@ export class UiMemoBox{
 
     static currentScrollDragTarget = null;
 
+    //Recently modified memos that are scheduled to be saved.
+    //These are timeout ids from setTimeout calls, see
+    //scheduleSaveMemo()
+    static scheduledMemoSaves = new Map();
+
+    //Counter to assign ids to new memos that
+    //aren't in the database yet
+    static newMemoCounter = 0;
+
     /**
      * Create a new memo element by cloning the "template"
      * and inserting it into the dom.
@@ -45,15 +57,20 @@ export class UiMemoBox{
 
         let newMemoBox = boxTemplate.cloneNode(true);
 
-        //This will later be set to an identifier based
-        //on the resource saved on the backend
-        newMemoBox.id = '';
-
         UiMemoBox.initMemoBox(newMemoBox);
 
         boxContainer.insertAdjacentElement('beforeend', newMemoBox);
+        let input = newMemoBox.getElementsByClassName('memo-input')[0];
+
         newMemoBox.style.left = `${getRandomXPosition(newMemoBox)}px`;
         newMemoBox.style.top = `${getRandomYPosition(newMemoBox)}px`;
+        
+        //This will later be set to an identifier based
+        //on the resource saved on the backend
+        let newid = UiMemoBox.newMemoCounter++;        
+        newMemoBox.id = `newmemo-box-${newid}`;
+        input.name = `newmemo-input-${newid}`;
+        input.id = `newmemo-input-${newid}`;
         
         console.log('Meme element created');
         return newMemoBox;
@@ -91,8 +108,76 @@ export class UiMemoBox{
         input.value = memo.memotext;
     }
 
-    static saveMemo(e){
-        //Stub
+    /**
+     * Encrypt the memo and save it to the backend.
+     * @param {*} e 
+     */
+    static async saveMemo(memoInputId){
+        let idIndex = memoInputId.lastIndexOf('-') + 1;
+        let memoid = memoInputId.substring(idIndex, memoInputId.length);
+        let update = true;
+        if(memoInputId.indexOf('newmemo')!=-1){
+            //this is a new memo
+            update = false;
+        }
+
+        let input = document.getElementById(memoInputId);
+        let box = input.closest('.memos-box');
+        let memotext = input.value;
+
+        let key = getKey();
+
+        let keyHash = await MemoCrypto.hashKey(key);
+        let salt = await MemoApi.getSalt(keyHash);
+        let encryptedKey = await MemoCrypto.encryptKey(key, salt);
+
+        let [encryptedMemo, iv] = await MemoCrypto.encryptNote(key,salt,memotext);
+
+        if(!update){
+            let res = await MemoApi.createMemo(encryptedKey, encryptedMemo, iv);
+
+            //Now that this is a saved resource, update ids to
+            //what this memo is identified by
+            box.id = `memo-box-${res._id}`;
+            input.id = `memo-input-${res._id}`;
+            input.name = `memo-input-${res._id}`;
+
+            //If memo was scheduled for an update, reschedule
+            //with the newly created id
+            let oldId = memoInputId;
+            if(UiMemoBox.scheduledMemoSaves.has(oldId)){
+                let oldTimeoutId = UiMemoBox.scheduledMemoSaves.get(oldId);
+                window.clearTimeout(oldTimeoutId);
+
+                UiMemoBox.scheduledMemoSaves.delete(oldId);
+                let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, input.id);
+                UiMemoBox.scheduledMemoSaves.set(input.id, timeoutId);
+            }
+            console.log(`New memo created (${res._id})`);
+        }else{
+            let res = await MemoApi.updateMemo(encryptedKey, memoid, encryptedMemo, iv);
+
+            console.log(`Memo updated (${res._id})`);
+        }
+    }
+
+    /**
+     * On input event, schedule a memo to be saved to the backend.
+     * If a save is already "scheduled", the timer is reset.
+     * This is so the backend isn't spammed with requests on every
+     * keystroke.
+     */
+    static scheduleSaveMemo(e){
+        let inputId = e.currentTarget.id;
+
+        if(UiMemoBox.scheduledMemoSaves.has(inputId)){
+            //Already scheduled, reset the timer
+            let oldTimeoutId = UiMemoBox.scheduledMemoSaves.get(inputId);
+            window.clearTimeout(oldTimeoutId);
+        }
+
+        let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, inputId);
+        UiMemoBox.scheduledMemoSaves.set(inputId, timeoutId);
     }
 
     static clearMemos(){
@@ -143,7 +228,7 @@ export class UiMemoBox{
         let inputContainer = box.getElementsByClassName('memo-input-container')[0];
         let input = inputContainer.getElementsByClassName('memo-input')[0];
         input.addEventListener('mousedown', UiMemoDrag.interceptDrag, true);
-        input.addEventListener('input', UiMemoBox.saveMemo);
+        input.addEventListener('input', UiMemoBox.scheduleSaveMemo);
 
         let deleteBtn = box.getElementsByClassName('memo-delete-btn')[0];
         deleteBtn.addEventListener('click', UiMemoBox.deleteMemo);
