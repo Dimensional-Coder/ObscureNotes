@@ -4,7 +4,41 @@
  * memo box elements.
  */
 
+ class MemoScrollbarDrag{
+    //Scrollbar element being dragged
+    scrollbar = null;
+
+    //Y position clicked on the element
+    relativeY = null;
+
+    //The text input being scrolled
+    input = null;
+
+    //Height in pixels of the scrollbar
+    //at time of grabbing
+    scrollbarHeight = null;
+
+    //Relative position, in pixels, of the
+    //middle point on the y axis
+    scrollbarMiddle = null;
+
+    //scrollbar container
+    inputContainer = null;
+
+    constructor(scrollbar, relativeY, input, scrollbarHeight, scrollbarMiddle, inputContainer){
+        this.scrollbar=scrollbar;
+        this.relativeY=relativeY;
+        this.input=input;
+        this.scrollbarHeight=scrollbarHeight;
+        this.scrollbarMiddle=scrollbarMiddle;
+        this.inputContainer=inputContainer;
+    }
+}
+
 export class UiMemoBox{
+
+    static currentScrollDragTarget = null;
+
     static addMemo(e){
         //stub
         console.log('Add memo');
@@ -72,11 +106,79 @@ export class UiMemoBox{
         UiMemoBox.redrawMemoScrollbar(scrollbar);
     }
 
+    //Shameful, basically copied my memo drag code for this.
+    //Code is similar but subtly different enough that it can't
+    //be reused
     static scrollbarDragStart(e){
+        let scrollbar = e.currentTarget;
+        let inputContainer = scrollbar.closest('.memo-input-container');
+        let input = inputContainer.getElementsByClassName('memo-input')[0];
+        
+        //Sum up computed heights of drawn scrollbar elements
+        let scrollbarHeight = 0;
+        for(let part of scrollbar.getElementsByClassName('memo-scrollbar-component')){
+            let computed = window.getComputedStyle(part);
+            scrollbarHeight += parseInt(computed.height);
+        }
 
+        let scrollbarMiddle = scrollbarHeight/2;
+
+        UiMemoBox.currentScrollDragTarget = new MemoScrollbarDrag(
+            scrollbar, e.offsetY, input, scrollbarHeight, scrollbarMiddle, inputContainer
+        );
+
+        document.body.addEventListener('mousemove', UiMemoBox.scrollbarDragUpdate);
+        document.body.addEventListener('mouseup', UiMemoBox.scrollbarDragEnd);
+        //document.body.classList.add('dragging');
+    
+        //Prevent memo drag event
+        e.stopPropagation();
+
+        console.log('Started scrollbar drag');
+    }
+
+    static scrollbarDragUpdate(e){
+        //New scrollbar pos based on mouse position
+        let distToMid = UiMemoBox.currentScrollDragTarget.scrollbarMiddle 
+                        - UiMemoBox.currentScrollDragTarget.relativeY;
+        let newY = e.clientY+distToMid;
+    
+        //Use computed bounding box to get y position of container
+        let boundingRect = 
+            UiMemoBox.currentScrollDragTarget.scrollbar.getBoundingClientRect();
+        let relativeNewY = newY - boundingRect.top;
+
+        //Scrollbar height can't go above the container, so
+        //scrollbar height determines max/min y inside container
+        let minY = UiMemoBox.currentScrollDragTarget.scrollbarHeight/2;
+        let maxY = boundingRect.height - (UiMemoBox.currentScrollDragTarget.scrollbarHeight/2);
+        
+        //normalize the relative y between the bounds of the container
+        //to get our "scroll percent" for the text area.
+        // n = (Y - Ymin) / (Ymax - Ymin)
+        let scrollPercent = (relativeNewY-minY)/(maxY-minY);
+        if(scrollPercent>1.0) scrollPercent = 0.99;
+
+        //scroll the overflow content and redraw
+        let input = UiMemoBox.currentScrollDragTarget.input;
+        let maxScrollPos = input.scrollHeight-input.clientHeight;
+        input.scrollTop = maxScrollPos * scrollPercent;
+
+        console.log(`relativeNewY(${relativeNewY}), minY(${minY}), maxY(${maxY})`);
+        console.log(`scrollPercent(${scrollPercent}), maxScrollPos(${maxScrollPos})`);
+        UiMemoBox.redrawMemoScrollbar(UiMemoBox.currentScrollDragTarget.scrollbar);
     }
 
     static scrollbarDragEnd(e){
-
+        if(UiMemoBox.currentScrollDragTarget == null){
+            console.error('No scroll drag target, ignoring scrollbarDragEnd event handler');
+            return;
+        }
+        UiMemoBox.currentDragTarget = null;
+    
+        document.body.removeEventListener('mousemove', UiMemoBox.scrollbarDragUpdate);
+        document.body.removeEventListener('mouseup', UiMemoBox.scrollbarDragEnd);
+        //document.body.classList.remove('dragging');
+        console.log('Ended scrollbar drag');
     }
 }

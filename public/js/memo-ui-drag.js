@@ -34,9 +34,6 @@ export class UiMemoDrag{
         document.body.classList.add('dragging');
     
         console.log('Started element drag');
-    
-        console.log(`client coords: ${e.clientX},${e.clientY}`);
-        console.log(`offset coords: ${e.offsetX},${e.offsetY}`);
     }
     
     static updateElementPos(e){

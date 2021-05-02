@@ -29,7 +29,8 @@ function initMemoScrollbar(){
     //TODO
 
     //Scrollbar drag
-    //TODO
+    let scrollbars = document.getElementsByClassName('memo-scrollbar');
+    scrollbars[0].addEventListener('mousedown', UiMemoBox.scrollbarDragStart);
 
     //Scroll wheel
     //TODO
