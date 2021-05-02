@@ -223,8 +223,9 @@ button:active {
     position: absolute;
 
     /* Default position */
-    left: 50vw;
-    top: 50vh;
+    /* TODO: generate position in javascript. */
+    left: 52vw;
+    top: 52vh;
 
     background-color: var(--memo-box-color);
     /* scaling border, a bit difficult to fit other elements */
@@ -296,6 +297,12 @@ button:active {
 /*** Scrollbar styling ***/
 /*************************/
 
+/*
+    Current known problems:
+      - Scaling the browser causes the scrollbar display to be off by a pixel
+      - memo-box position being fractional (ie 50vw) causes circles to display incorrectly
+    TODO: Fix these issues.
+*/
 .memo-scrollbar{
     /* Take up no space on the dom, and displace it to
     overlap with the textarea element. Child elements
@@ -336,11 +343,6 @@ button:active {
 
 .memo-scrollbar-component.drawing-scrollbar-middle{
     /* Height to be computed by js */
-
-    /* Hack. Width set to be 1 less than memo-scrollbar-component
-    since the circles drawn in scrollbar-top and scrollbar-bottom
-    are 1 pixel too small (at any width) */
-    width: 8px;
 }
 
 .scrollbar-inactive{
