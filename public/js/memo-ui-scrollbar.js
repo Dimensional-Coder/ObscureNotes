@@ -193,4 +193,31 @@ export class UiMemoScrollbar{
         //document.body.classList.remove('dragging');
         console.log('Ended scrollbar drag');
     }
+
+    /**
+     * Wire scrollbar to redraw under certain conditions:
+     *   - Memo box resize
+     *   - Text area input (new/deleted lines)
+     *   - Dragging the scrollbar
+     *   - Scroll wheel
+     */
+    static initMemoScrollbar(scrollbar){
+
+        let input = scrollbar.closest('.memo-input-container')
+                    .getElementsByClassName('memo-input')[0];
+
+        //Box resize
+        let memoResizeObserver = new ResizeObserver(UiMemoScrollbar.inputResizeHandler);
+        memoResizeObserver.observe(input);
+
+        //Text area input
+        input.addEventListener('keydown', UiMemoScrollbar.inputChangeHandler);
+        //TODO: Page up/pagedown
+
+        //Scrollbar drag
+        scrollbar.addEventListener('mousedown', UiMemoScrollbar.scrollbarDragStart);
+
+        //Scroll wheel
+        //TODO
+    }
 }

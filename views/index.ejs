@@ -56,13 +56,14 @@
             <div class='drawing-plus'></div>
         </button>
 
-        <div class='memos-box'>
+        <!-- Template for creating new memo boxes -->
+        <div class='memos-box' id='memos-box-template'>
             <button type='button' class='memos-btn memo-delete-btn'>
                 <div class='drawing-x'></div>
             </button>
 
             <div class='memo-input-container'>
-                <textarea name="memo-input-01" id="memo-input-01"
+                <textarea name="memo-input-01" id="memo-input-xx"
                     class='memo-input' cols="30" rows="10"></textarea>
                 
                 <div class='memo-scrollbar scrollbar-active'>
@@ -72,6 +73,11 @@
                 </div>
             </div>
         </div>
+
+        <!-- This is where we're gonna toss our memo boxes -->
+        <section id='memo-main-box-container'>
+
+        </section>
 
     </section>
     
