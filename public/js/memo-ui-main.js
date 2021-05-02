@@ -11,18 +11,38 @@ import {UiMemoBox} from './memo-ui-box.js';
 
 const MEMO_DEBUG = true;
 
-function initMemoButtons(){
-    let deleteBtns = document.getElementsByClassName('memo-delete-btn');
-    deleteBtns[0].addEventListener('click', UiMemoBox.deleteMemo);
-    deleteBtns[0].addEventListener('mousedown', UiMemoDrag.interceptDrag);
+/**
+ * Wire scrollbar to redraw under certain conditions:
+ *   - Memo box resize
+ *   - Text area input (new/deleted lines)
+ *   - Dragging the scrollbar
+ *   - Scroll wheel
+ */
+function initMemoScrollbar(){
+    //Box resize
+    let textAreas = document.getElementsByClassName('memo-input');
 
+    let memoResizeObserver = new ResizeObserver(UiMemoBox.inputResizeHandler);
+    memoResizeObserver.observe(textAreas[0]);
+
+    //Text area input
+    //TODO
+
+    //Scrollbar drag
+    //TODO
+
+    //Scroll wheel
+    //TODO
+}
+
+function initApplicationScreen(){
     let addBtns = document.getElementsByClassName('memo-add-btn');
     addBtns[0].addEventListener('click', UiMemoBox.addMemo);
 }
 
 //Initialize memo boxes with listeners to
 //be interactive
-function initMemoBoxes(){
+function initMemoBox(){
     let memoBoxes = document.getElementsByClassName('memos-box');
     for(let box of memoBoxes){
         box.addEventListener('mousedown', UiMemoDrag.startElementDrag);
@@ -31,10 +51,11 @@ function initMemoBoxes(){
     let textAreas = document.getElementsByClassName('memo-input');
     for(let t of textAreas){
         t.addEventListener('mousedown', UiMemoDrag.interceptDrag, true);
-        
-        let memoResizeObserver = new ResizeObserver(UiMemoBox.redrawMemoScrollbar);
-        memoResizeObserver.observe(t);
     }
+
+    let deleteBtns = document.getElementsByClassName('memo-delete-btn');
+    deleteBtns[0].addEventListener('click', UiMemoBox.deleteMemo);
+    deleteBtns[0].addEventListener('mousedown', UiMemoDrag.interceptDrag);
 }
 
 function initViewScreens(){
@@ -48,8 +69,9 @@ function initViewScreens(){
 
 function init(){
     initViewScreens();
-    initMemoBoxes();
-    initMemoButtons();
+    initMemoBox();
+    initApplicationScreen();
+    initMemoScrollbar();
 
     if(MEMO_DEBUG){
         window.UiMemoDrag = UiMemoDrag;
