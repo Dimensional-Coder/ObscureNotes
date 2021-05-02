@@ -41,6 +41,8 @@ export class MemoController {
      * @param memoid Id of the memo, if this is an update
      * @param memobytes Encrypted memo text as a hex string (ie, 'ff10')
      * @param iv Initialization vector used to encrypt the memo
+     * @param memox X position percentage of the memo
+     * @param memoy Y position percentage of the memo
      * @returns Object
      *              - operation: Operation done, 'create' or 'update'
      *              - success: true or false
@@ -49,13 +51,16 @@ export class MemoController {
     @Post('/memos/:encryptedKey/:memoid?')
     async upsertMemo(
         @Param('encryptedKey') encryptedKey, @Param('memoid') memoid,
-        @Body('memobytes') memobytes, @Body('iv') iv){
+        @Body('memobytes') memobytes, @Body('iv') iv,
+        @Body('memox') memox, @Body('memoy') memoy){
 
         let collection = this.mongoService.getMemoCollection(encryptedKey);
 
         let memo: Memo = {
             memobytes: memobytes,
-            iv: iv
+            iv: iv,
+            memox: memox,
+            memoy: memoy
         };
 
         //This is a new memo
@@ -84,7 +89,7 @@ export class MemoController {
 
             let err, res = await collection.updateOne(
                 {_id: id},
-                { $set: {memobytes: memobytes, iv: iv}}
+                { $set: {memobytes: memobytes, iv: iv, memox: memox, memoy: memoy}}
             );
     
             if(err){

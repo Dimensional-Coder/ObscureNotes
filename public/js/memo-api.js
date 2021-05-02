@@ -45,7 +45,7 @@ export class MemoApi{
      * @param {*} iv The initialization vector used to encrypt the memo
      * @returns The inserted memo object to the server database
      */
-    static async createMemo(encryptedKey, encryptedMemo, iv){
+    static async createMemo(encryptedKey, encryptedMemo, iv, memox, memoy){
         encryptedKey = encryptedKey.replaceAll("/","_");
 
         let headers = new Headers();
@@ -56,7 +56,9 @@ export class MemoApi{
             headers: headers,
             body: JSON.stringify({
                 memobytes: encryptedMemo,
-                iv: iv
+                iv: iv,
+                memox: memox,
+                memoy: memoy
             })
         });
 
@@ -65,7 +67,7 @@ export class MemoApi{
         return Promise.resolve(data.memoobject);
     }
 
-    static async updateMemo(encryptedKey, memoid, encryptedMemo, iv){
+    static async updateMemo(encryptedKey, memoid, encryptedMemo, iv, memox, memoy){
         encryptedKey = encryptedKey.replaceAll("/","_");
 
         let headers = new Headers();
@@ -76,7 +78,9 @@ export class MemoApi{
             headers: headers,
             body: JSON.stringify({
                 memobytes: encryptedMemo,
-                iv: iv
+                iv: iv,
+                memox: memox,
+                memoy: memoy
             })
         });
 

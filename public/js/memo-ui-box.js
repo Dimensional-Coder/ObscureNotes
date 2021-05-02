@@ -34,6 +34,36 @@ function getKey(){
     return keyInput.value;
 }
 
+function getMemoXPercent(memoBox){
+    let screen = document.getElementsByClassName('screen-active')[0];
+
+    let screenWidth = parseInt(window.getComputedStyle(screen).width);
+    let memoX = parseInt(window.getComputedStyle(memoBox).left);
+
+    return memoX/screenWidth;
+}
+
+function getMemoYPercent(memoBox){
+    let screen = document.getElementsByClassName('screen-active')[0];
+
+    let screenHeight = parseInt(window.getComputedStyle(screen).height);
+    let memoY = parseInt(window.getComputedStyle(memoBox).top);
+
+    return memoY/screenHeight;
+}
+
+function percentToScreenX(xPercent){
+    let screen = document.getElementsByClassName('screen-active')[0];
+
+    return parseInt(window.getComputedStyle(screen).width)*xPercent;
+}
+
+function percentToScreenY(yPercent){
+    let screen = document.getElementsByClassName('screen-active')[0];
+
+    return parseInt(window.getComputedStyle(screen).height)*yPercent;
+}
+
 export class UiMemoBox{
 
     static currentScrollDragTarget = null;
@@ -122,6 +152,15 @@ export class UiMemoBox{
         input.name = `memo-input-${memo._id}`;
         input.id = `memo-input-${memo._id}`;
         input.value = memo.memotext;
+
+        if(memo.memox){
+            let x = percentToScreenX(memo.memox);
+            memoBox.style.left = `${x}px`;
+        }
+        if(memo.memoy){
+            let y = percentToScreenY(memo.memoy);
+            memoBox.style.top = `${y}px`;
+        }
     }
 
     /**
@@ -140,6 +179,8 @@ export class UiMemoBox{
         let input = document.getElementById(memoInputId);
         let box = input.closest('.memos-box');
         let memotext = input.value;
+        let memox = getMemoXPercent(box);
+        let memoy = getMemoYPercent(box);
 
         let key = getKey();
 
@@ -150,7 +191,9 @@ export class UiMemoBox{
         let [encryptedMemo, iv] = await MemoCrypto.encryptNote(key,salt,memotext);
 
         if(!update){
-            let res = await MemoApi.createMemo(encryptedKey, encryptedMemo, iv);
+            let res = await MemoApi.createMemo(
+                encryptedKey, encryptedMemo, iv, memox, memoy
+            );
 
             //Now that this is a saved resource, update ids to
             //what this memo is identified by
@@ -162,38 +205,51 @@ export class UiMemoBox{
             //with the newly created id
             let oldId = memoInputId;
             if(UiMemoBox.scheduledMemoSaves.has(oldId)){
-                let oldTimeoutId = UiMemoBox.scheduledMemoSaves.get(oldId);
-                window.clearTimeout(oldTimeoutId);
-
-                UiMemoBox.scheduledMemoSaves.delete(oldId);
-                let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, input.id);
-                UiMemoBox.scheduledMemoSaves.set(input.id, timeoutId);
+                UiMemoBox.scheduleSaveMemo(box);
             }
             console.log(`New memo created (${res._id})`);
         }else{
-            let res = await MemoApi.updateMemo(encryptedKey, memoid, encryptedMemo, iv);
+            let res = await MemoApi.updateMemo(
+                encryptedKey, memoid, encryptedMemo, iv, memox, memoy
+            );
 
             console.log(`Memo updated (${res._id})`);
         }
     }
 
     /**
-     * On input event, schedule a memo to be saved to the backend.
+     * Schedule a memo to be saved to the backend.
      * If a save is already "scheduled", the timer is reset.
      * This is so the backend isn't spammed with requests on every
      * keystroke.
      */
-    static scheduleSaveMemo(e){
-        let inputId = e.currentTarget.id;
+    static scheduleSaveMemo(box){
+        let input = box.getElementsByClassName('memo-input')[0];
 
-        if(UiMemoBox.scheduledMemoSaves.has(inputId)){
+        if(UiMemoBox.scheduledMemoSaves.has(input.id)){
             //Already scheduled, reset the timer
-            let oldTimeoutId = UiMemoBox.scheduledMemoSaves.get(inputId);
+            let oldTimeoutId = UiMemoBox.scheduledMemoSaves.get(input.id);
             window.clearTimeout(oldTimeoutId);
+            UiMemoBox.scheduledMemoSaves.delete(input.id);
         }
 
-        let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, inputId);
-        UiMemoBox.scheduledMemoSaves.set(inputId, timeoutId);
+        let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, input.id);
+        UiMemoBox.scheduledMemoSaves.set(input.id, timeoutId);
+    }
+
+    //Save memo when the input is changed
+    static inputSaveHandler(e){
+        let input = e.currentTarget;
+        let box = input.closest('.memos-box');
+
+        UiMemoBox.scheduleSaveMemo(box);
+    }
+
+    //Save memo when a memo box is moved
+    static boxSaveHandler(e){
+        let box = e.currentTarget;
+
+        UiMemoBox.scheduleSaveMemo(box);
     }
 
     static clearMemos(){
@@ -241,11 +297,12 @@ export class UiMemoBox{
     //be interactive
     static initMemoBox(box){
         box.addEventListener('mousedown', UiMemoDrag.startElementDrag);
+        box.addEventListener('mouseup', UiMemoBox.boxSaveHandler)
 
         let inputContainer = box.getElementsByClassName('memo-input-container')[0];
         let input = inputContainer.getElementsByClassName('memo-input')[0];
         input.addEventListener('mousedown', UiMemoDrag.interceptDrag, true);
-        input.addEventListener('input', UiMemoBox.scheduleSaveMemo);
+        input.addEventListener('input', UiMemoBox.inputSaveHandler);
 
         let deleteBtn = box.getElementsByClassName('memo-delete-btn')[0];
         deleteBtn.addEventListener('click', UiMemoBox.deleteMemoHandler);
