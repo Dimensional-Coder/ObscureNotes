@@ -40,7 +40,8 @@ async function runMemoEncrypt(event, update=false){
             let res = await NotesApi.createMemo(encryptedKey, encryptedNote, iv);
             console.log(res);
 
-            insertMemo(res._id, memotext);
+            //TODO: fix bug, check if "first" here
+            insertMemo(res._id, memotext, true);
             document.getElementById('new-memo-input').value = "";
         }else{
             let res = await NotesApi.updateMemo(encryptedKey, memoid, encryptedNote, iv);
