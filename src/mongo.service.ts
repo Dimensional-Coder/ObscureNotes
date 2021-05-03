@@ -9,7 +9,16 @@ export class MongoService {
     mongoClient: MongoClient;
 
     constructor(){
+
+        //Local debugging
         let uri: string = 'mongodb://localhost:27017';
+
+        //When deployed, an environment variable should be used
+        if(process.env.MONGOLAB_URI){
+            console.log('Using remote mongo db configured');
+            uri = process.env.MONGOLAB_URI;
+        }
+        
         this.mongoClient = new MongoClient(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true
