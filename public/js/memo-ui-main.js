@@ -21,11 +21,17 @@ function initApplicationScreen(){
 function initViewScreens(){
     
     let startButton = document.getElementById('memos-start-btn');
-    startButton.addEventListener('click', UiMemoScreen.triggerScreenTransition);
+    startButton.addEventListener('click', UiMemoScreen.transitionToApp);
     startButton.addEventListener('click', UiMemoBox.populateMemos);
 
-    let returnButton = document.getElementById('memos-return-btn');
-    returnButton.addEventListener('click', UiMemoScreen.triggerScreenTransition);
+    let aboutButton = document.getElementById('memos-about-btn');
+    aboutButton.addEventListener('click', UiMemoScreen.transitionToAbout);
+
+    let appReturnButton = document.getElementById('memos-app-return-btn');
+    appReturnButton.addEventListener('click', UiMemoScreen.transitionFromApp);
+
+    let aboutReturnButton = document.getElementById('memos-about-return-btn');
+    aboutReturnButton.addEventListener('click', UiMemoScreen.transitionFromAbout);
 }
 
 function init(){

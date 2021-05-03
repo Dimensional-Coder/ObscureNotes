@@ -16,28 +16,62 @@
     }
 }
 
-/* Animate a view screen leaving */
-@keyframes screen-begone{
+/* Animate splash screen going up offscreen */
+@keyframes screen-splash-up{
     from{
+        top: 0vh;
         left: 0vw;
-        visibility: visible;
+        opacity: 1;
     }
 
     to{
-        left: 130vw;
-        visibility: hidden;
+        top: -130vh;
+        left: 0vw;
+        opacity: 0;
     }
 }
 
-/* Animate a view screen coming to the main view */
-@keyframes screen-bootycall{
+/* Animate splash screen going left offscreen */
+@keyframes screen-splash-left{
     from{
+        left: 0vw;
+        top: 0vh;
+        opacity: 1;
+    }
+
+    to{
         left: -130vw;
-        visibility: hidden;
+        top: 0vh;
+        opacity: 0;
+    }
+}
+
+/* Animate app screen going left into screen view */
+@keyframes screen-app-enter{
+    from{
+        left: 130vw;
+        top: 0vh;
+        opacity: 0;
     }
 
     to{
         left: 0vw;
-        visibility: visible;
+        top: 0vh;
+        opacity: 1;
+    }
+}
+
+/* Animate app screen going up into screen view */
+@keyframes screen-about-enter{
+    from{
+        top: 130vh;
+        left: 0vw;
+        opacity: 0;
+    }
+
+    to{
+        top: 0vh;
+        left: 0vw;
+        opacity: 1;
     }
 }
