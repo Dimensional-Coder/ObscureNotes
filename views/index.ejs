@@ -14,7 +14,7 @@
 <body>
     
     <!-- Splash screen -->
-    <section class='memo-screen screen-active' id='memo-splash-screen'>
+    <section class='memo-screen screen-inactive' id='memo-splash-screen'>
         <section id='memos-title-section'>
             <h1 id='memos-main-title'>Obscure Notes</h1>
             <p id='memos-main-subtitle'>Anonymous storage of memos and ideas.</p>
@@ -86,12 +86,66 @@
     </section>
 
     <!-- About screen to provide info on the project -->
-    <section class='memo-screen screen-inactive' id='memo-about-screen'>
+    <section class='memo-screen screen-active' id='memo-about-screen'>
         <button type='button' class='memos-btn memo-back-btn' id='memos-about-return-btn'>
             <div class='drawing-back-arrow'></div>
         </button>
     
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas est vitae cumque enim magni ducimus? Excepturi maiores nisi, impedit in blanditiis cupiditate saepe error. Consectetur ab quod cum eos quisquam.</p>
+        <h1 id='memo-about-title'>About</h1>
+
+        <section id='memo-about-content'>
+
+            <section id='memo-about-project' class='memo-about-section memo-about-section-odd'>
+                <h2>What is Obscure Notes?</h2>
+                <p>
+                    A quick way to share links or jot ideas down. I got tired of
+                    emailing links back and forth between my work and personal email,
+                    so I thought it would be fun to implement my own solution.
+
+                    This iteration is a beta release of Obscure Notes. It's a bit rough around
+                    the edges for certain aspects, like the scrollbar. I will add a roadmap
+                    for features and changes planned for the project.
+                </p>
+            </section>
+            
+            <section id='memo-about-how' class='memo-about-section memo-about-section-even'>
+                <h2>How does Obscure Notes work?</h2>
+                <p>
+                    You enter a key phrase to get started and are taken to a page assigned to
+                    that key. Any memos you write here can be found again by using this key,
+                    and you can share memos by sharing the key. However,
+                    anyone with the key can modify the memos on that page, so only
+                    give the key to people you trust. There is no protection for your memos
+                    once someone knows the key, they are private through obscurity.
+
+                    Obscure Notes is anonymous, and encrypts text before sending it to
+                    the server. Anonymity and encryption are features that I chose to design
+                    as a challenge.
+                </p>
+            </section>
+            
+            <section id='memo-about-credit' class='memo-about-section memo-about-section-odd'>
+                <h2>Credit</h2>
+
+                <p>
+                    Obscure Notes uses some third party software
+                </p>
+                <ul class='memo-dependency-list'>
+                    <li>NestJS (server application)</li>
+                    <li>MongoDB</li>
+                    <li>Bcrypt Javascript implementation, by dcodeIO</li>
+                </ul>
+            </section>
+            
+            <section id='memo-about-contact' class='memo-about-section memo-about-section-even'>
+                <h2>Contact</h2>
+                <p>
+                    I may add my own details here later, but for now I'm just trying
+                    to get the first iteration of Obscure Notes deployed!
+                </p>
+            </section>
+            
+        </section>
     </section>
     
     

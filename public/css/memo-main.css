@@ -146,6 +146,50 @@ body.dragging *
 #memos-bg-box-2 .memos-bg-box-text::before{animation-duration: 4s;}
 #memos-bg-box-3 .memos-bg-box-text::before{animation-duration: 10s;}
 
+/****************************/
+/*** About screen styling ***/
+/****************************/
+
+#memo-about-content{
+    margin-top: 10vh;
+    height: 70vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#memo-about-title{
+    position: absolute;
+    transform: rotate(-90deg);
+
+    font-size: 5rem;
+    font-weight: 350;
+    margin-bottom: 10px;
+
+    top: 0vh;
+    right: -50px;
+}
+
+.memo-about-section{
+    max-width: 20vw;
+}
+
+.memo-about-section-odd{
+    align-self: flex-start;
+}
+
+.memo-about-section-even{
+    align-self: flex-end;
+}
+
+#memo-about-contact{
+    align-self: center;
+}
+
+.memo-dependency-list li{
+    text-align: left;
+}
+
 /**********************/
 /*** Button styling ***/
 /**********************/
