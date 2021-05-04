@@ -29,6 +29,7 @@
         </section>
 
         <button id="memos-about-btn" type="button" class="memos-btn">About</button>
+        <button id="memos-changelog-btn" type="button" class="memos-btn">Changelog</button>
 
         <!-- Background animation, for aesthetic purposes. -->
         <section id='memos-bg-animation'>
@@ -162,6 +163,41 @@
         </section>
     </section>
     
+    <section class='memo-screen screen-inactive' id='memo-changelog-screen'>
+        <button type='button' class='memos-btn memo-back-btn' id='memos-changelog-return-btn'>
+            <div class='drawing-back-arrow'></div>
+        </button>
+
+        <section id='memo-changelog-content'>
+            <h1>Changelog</h1>
+            <p>I will make this look pretty later, I swear, but it's a work night!</p>
+
+            <h2>Version 0.1.0 (Beta)</h2>
+            <p>Release date: 05/02/21</p>
+            <p>Changes:</p>
+            <ul>
+                <li>Initial beta release deployed</li>
+                <li>Initial memo UI, encryption, and backend functionality</li>
+            </ul>
+
+            <h2>Version 0.2.0 (Beta)</h2>
+            <p>Release date: 05/03/21</p>
+            <p>Changes (thank you for the feedback guys!):</p>
+            <ul>
+                <li>Bug fix: fix error retrieving memos for certain keys</li>
+                <li>
+                    Error checking and display. Notice if failed to 
+                    retrieve memos, status icon to show save status on memos
+                </li>
+                <li>Preserve size of memo on save</li>
+                <li>
+                    Bug fix: bring memo element to forefront when clicking
+                    on or resizing memo
+                </li>
+                <li>Bug fix: handle some edge cases for memo deletions</li>
+            </ul>
+        </section>
+    </section>
     
 </body>
 </html>
