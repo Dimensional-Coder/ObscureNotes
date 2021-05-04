@@ -118,6 +118,11 @@ export class UiMemoBox{
     }
 
     static async deleteMemo(memoBox){
+        if(memoBox.id.indexOf('newmemo') != -1){
+            //This memo was never saved to the database, ignore
+            return;
+        }
+        
         let idIndex = memoBox.id.lastIndexOf('-') + 1;
         let memoid = memoBox.id.substring(idIndex, memoBox.id.length);
 
@@ -128,6 +133,12 @@ export class UiMemoBox{
         let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
         let res = await MemoApi.deleteMemo(encryptedKey, memoid);
+
+        //Remove scheduled save
+        let input = memoBox.getElementsByClassName('memo-input')[0];
+        if(UiMemoBox.scheduledMemoSaves.has(input.id)){
+            UiMemoBox.scheduledMemoSaves.delete(input.id);
+        }
 
         console.log(`Memo deleted from server ${memoid}`);
     }
@@ -194,6 +205,11 @@ export class UiMemoBox{
         }
 
         let input = document.getElementById(memoInputId);
+        if(!input){
+            //Element does not exist, ignore
+            return;
+        }
+
         let box = input.closest('.memos-box');
         let memotext = input.value;
         let memox = getMemoXPercent(box);
