@@ -84,6 +84,10 @@ export class UiMemoBox{
     //aren't in the database yet
     static newMemoCounter = 0;
 
+    //z index counter to ensure any grabbed 
+    //memo appears on the forefront
+    static zIndexCounter = 1;
+
     /**
      * Create a new memo element by cloning the "template"
      * and inserting it into the dom.
@@ -333,16 +337,29 @@ export class UiMemoBox{
         console.log('Memos retrieved and decrypted');
     }
 
+    static bringMemoToFront(e){
+        let box = e.currentTarget;
+        box.style.zIndex = UiMemoBox.zIndexCounter++;
+    }
+
+    static bringInputToFront(e){
+        let box = e.currentTarget.closest('.memos-box');
+        box.style.zIndex = UiMemoBox.zIndexCounter++;
+        e.stopPropagation();
+    }
+
     //Initialize memo boxes with listeners to
     //be interactive
     static initMemoBox(box){
         box.addEventListener('mousedown', UiMemoDrag.startElementDrag);
+        box.addEventListener('mousedown', UiMemoBox.bringMemoToFront);
         box.addEventListener('mouseup', UiMemoBox.boxSaveHandler);
         UiMemoError.setMemoSaveStatus(box, MemoStatus.INACTIVE);
 
         let inputContainer = box.getElementsByClassName('memo-input-container')[0];
         let input = inputContainer.getElementsByClassName('memo-input')[0];
-        input.addEventListener('mousedown', UiMemoDrag.interceptDrag, true);
+        //input.addEventListener('mousedown', UiMemoDrag.interceptDrag);
+        input.addEventListener('mousedown', UiMemoBox.bringInputToFront, true);
         input.addEventListener('input', UiMemoBox.inputSaveHandler);
 
         let deleteBtn = box.getElementsByClassName('memo-delete-btn')[0];
