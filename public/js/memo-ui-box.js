@@ -1,6 +1,13 @@
 
+/**
+ * Scripting for boxes in the main application
+ * screen. Needs to be broken up, this file is
+ * too large.
+ */
+
 import {UiMemoDrag} from './memo-ui-drag.js';
 import {UiMemoScrollbar} from './memo-ui-scrollbar.js';
+import {UiMemoError} from './memo-ui-error.js';
 
 import { MemoApi } from './memo-api.js';
 import { MemoConvert } from './memo-convert.js';
@@ -269,21 +276,32 @@ export class UiMemoBox{
      * then redraw memos on screen with plaintext memos.
      */
     static async populateMemos(e){
+        UiMemoBox.clearMemos();
+        UiMemoError.hideGenericError();
+
         let key = getKey();
 
         let keyHash = await MemoCrypto.hashKey(key);
         let salt = await MemoApi.getSalt(keyHash);
         let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
-        let memos = await MemoApi.getMemos(encryptedKey);
+        let memos = null;
+        try{
+            memos = await MemoApi.getMemos(encryptedKey);
 
-        for(let memo of memos){
-            let memoText = 
-                await MemoCrypto.decryptNote(key, salt, memo.iv, memo.memobytes);
-                memo.memotext = memoText;
+            for(let memo of memos){
+                let memoText = 
+                    await MemoCrypto.decryptNote(key, salt, memo.iv, memo.memobytes);
+                    memo.memotext = memoText;
+            }
+        }catch(error){
+            console.error(error);
+            console.error('Failed to retrieve or decrypt memos, disabling display of memos');
+            UiMemoError.showGenericError();
+            
+            return Promise.resolve();
         }
-
-        UiMemoBox.clearMemos();
+        
 
         for(let memo of memos){
             let memoBox = UiMemoBox.addMemoElement();
