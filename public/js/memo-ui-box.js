@@ -1,6 +1,13 @@
 
+/**
+ * Scripting for boxes in the main application
+ * screen. Needs to be broken up, this file is
+ * too large.
+ */
+
 import {UiMemoDrag} from './memo-ui-drag.js';
 import {UiMemoScrollbar} from './memo-ui-scrollbar.js';
+import {UiMemoError, MemoStatus} from './memo-ui-error.js';
 
 import { MemoApi } from './memo-api.js';
 import { MemoConvert } from './memo-convert.js';
@@ -77,6 +84,10 @@ export class UiMemoBox{
     //aren't in the database yet
     static newMemoCounter = 0;
 
+    //z index counter to ensure any grabbed 
+    //memo appears on the forefront
+    static zIndexCounter = 1;
+
     /**
      * Create a new memo element by cloning the "template"
      * and inserting it into the dom.
@@ -107,6 +118,11 @@ export class UiMemoBox{
     }
 
     static async deleteMemo(memoBox){
+        if(memoBox.id.indexOf('newmemo') != -1){
+            //This memo was never saved to the database, ignore
+            return;
+        }
+        
         let idIndex = memoBox.id.lastIndexOf('-') + 1;
         let memoid = memoBox.id.substring(idIndex, memoBox.id.length);
 
@@ -117,6 +133,12 @@ export class UiMemoBox{
         let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
         let res = await MemoApi.deleteMemo(encryptedKey, memoid);
+
+        //Remove scheduled save
+        let input = memoBox.getElementsByClassName('memo-input')[0];
+        if(UiMemoBox.scheduledMemoSaves.has(input.id)){
+            UiMemoBox.scheduledMemoSaves.delete(input.id);
+        }
 
         console.log(`Memo deleted from server ${memoid}`);
     }
@@ -161,6 +183,12 @@ export class UiMemoBox{
             let y = percentToScreenY(memo.memoy);
             memoBox.style.top = `${y}px`;
         }
+        if(memo.memowidth){
+            input.style.width = memo.memowidth;
+        }
+        if(memo.memoheight){
+            input.style.height = memo.memoheight;
+        }
     }
 
     /**
@@ -177,10 +205,17 @@ export class UiMemoBox{
         }
 
         let input = document.getElementById(memoInputId);
+        if(!input){
+            //Element does not exist, ignore
+            return;
+        }
+
         let box = input.closest('.memos-box');
         let memotext = input.value;
         let memox = getMemoXPercent(box);
         let memoy = getMemoYPercent(box);
+        let memowidth = input.style.width;
+        let memoheight = input.style.height;
 
         let key = getKey();
 
@@ -190,30 +225,42 @@ export class UiMemoBox{
 
         let [encryptedMemo, iv] = await MemoCrypto.encryptNote(key,salt,memotext);
 
-        if(!update){
-            let res = await MemoApi.createMemo(
-                encryptedKey, encryptedMemo, iv, memox, memoy
-            );
+        try{
+            if(!update){
+                let res = await MemoApi.createMemo(
+                    encryptedKey, encryptedMemo, iv,
+                    memox, memoy, memowidth, memoheight
+                );
 
-            //Now that this is a saved resource, update ids to
-            //what this memo is identified by
-            box.id = `memo-box-${res._id}`;
-            input.id = `memo-input-${res._id}`;
-            input.name = `memo-input-${res._id}`;
+                //Now that this is a saved resource, update ids to
+                //what this memo is identified by
+                box.id = `memo-box-${res._id}`;
+                input.id = `memo-input-${res._id}`;
+                input.name = `memo-input-${res._id}`;
 
-            //If memo was scheduled for an update, reschedule
-            //with the newly created id
-            let oldId = memoInputId;
-            if(UiMemoBox.scheduledMemoSaves.has(oldId)){
-                UiMemoBox.scheduleSaveMemo(box);
+                //If memo was scheduled for an update, reschedule
+                //with the newly created id
+                let oldId = memoInputId;
+                if(UiMemoBox.scheduledMemoSaves.has(oldId)){
+                    UiMemoBox.scheduleSaveMemo(box);
+                }
+                console.log(`New memo created (${res._id})`);
+            }else{
+                let res = await MemoApi.updateMemo(
+                    encryptedKey, memoid, encryptedMemo, iv,
+                    memox, memoy, memowidth, memoheight
+                );
+
+                console.log(`Memo updated (${res._id})`);
             }
-            console.log(`New memo created (${res._id})`);
-        }else{
-            let res = await MemoApi.updateMemo(
-                encryptedKey, memoid, encryptedMemo, iv, memox, memoy
-            );
 
-            console.log(`Memo updated (${res._id})`);
+            //Success
+            UiMemoError.setMemoSaveStatus(box, MemoStatus.SUCCESS);
+        }
+        catch(error){
+            console.error(error);
+            console.error('Failed to create or update memo');
+            UiMemoError.setMemoSaveStatus(box, MemoStatus.ERROR);
         }
     }
 
@@ -235,6 +282,7 @@ export class UiMemoBox{
 
         let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, input.id);
         UiMemoBox.scheduledMemoSaves.set(input.id, timeoutId);
+        UiMemoError.setMemoSaveStatus(box, MemoStatus.PROGRESS);
     }
 
     //Save memo when the input is changed
@@ -269,39 +317,65 @@ export class UiMemoBox{
      * then redraw memos on screen with plaintext memos.
      */
     static async populateMemos(e){
+        UiMemoBox.clearMemos();
+        UiMemoError.hideGenericError();
+
         let key = getKey();
 
         let keyHash = await MemoCrypto.hashKey(key);
         let salt = await MemoApi.getSalt(keyHash);
         let encryptedKey = await MemoCrypto.encryptKey(key, salt);
 
-        let memos = await MemoApi.getMemos(encryptedKey);
+        let memos = null;
+        try{
+            memos = await MemoApi.getMemos(encryptedKey);
 
-        for(let memo of memos){
-            let memoText = 
-                await MemoCrypto.decryptNote(key, salt, memo.iv, memo.memobytes);
-                memo.memotext = memoText;
+            for(let memo of memos){
+                let memoText = 
+                    await MemoCrypto.decryptNote(key, salt, memo.iv, memo.memobytes);
+                    memo.memotext = memoText;
+            }
+        }catch(error){
+            console.error(error);
+            console.error('Failed to retrieve or decrypt memos, disabling display of memos');
+            UiMemoError.showGenericError();
+            
+            return Promise.resolve();
         }
-
-        UiMemoBox.clearMemos();
+        
 
         for(let memo of memos){
             let memoBox = UiMemoBox.addMemoElement();
             UiMemoBox.setMemoContent(memoBox, memo);
+            UiMemoError.setMemoSaveStatus(memoBox, MemoStatus.SUCCESS);
         }
 
         console.log('Memos retrieved and decrypted');
+    }
+
+    static bringMemoToFront(e){
+        let box = e.currentTarget;
+        box.style.zIndex = UiMemoBox.zIndexCounter++;
+    }
+
+    static bringInputToFront(e){
+        let box = e.currentTarget.closest('.memos-box');
+        box.style.zIndex = UiMemoBox.zIndexCounter++;
+        e.stopPropagation();
     }
 
     //Initialize memo boxes with listeners to
     //be interactive
     static initMemoBox(box){
         box.addEventListener('mousedown', UiMemoDrag.startElementDrag);
-        box.addEventListener('mouseup', UiMemoBox.boxSaveHandler)
+        box.addEventListener('mousedown', UiMemoBox.bringMemoToFront);
+        box.addEventListener('mouseup', UiMemoBox.boxSaveHandler);
+        UiMemoError.setMemoSaveStatus(box, MemoStatus.INACTIVE);
 
         let inputContainer = box.getElementsByClassName('memo-input-container')[0];
         let input = inputContainer.getElementsByClassName('memo-input')[0];
-        input.addEventListener('mousedown', UiMemoDrag.interceptDrag, true);
+        //input.addEventListener('mousedown', UiMemoDrag.interceptDrag);
+        input.addEventListener('mousedown', UiMemoBox.bringInputToFront, true);
         input.addEventListener('input', UiMemoBox.inputSaveHandler);
 
         let deleteBtn = box.getElementsByClassName('memo-delete-btn')[0];

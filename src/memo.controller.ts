@@ -52,7 +52,8 @@ export class MemoController {
     async upsertMemo(
         @Param('encryptedKey') encryptedKey, @Param('memoid') memoid,
         @Body('memobytes') memobytes, @Body('iv') iv,
-        @Body('memox') memox, @Body('memoy') memoy){
+        @Body('memox') memox, @Body('memoy') memoy,
+        @Body('memowidth') memowidth, @Body('memoheight') memoheight){
 
         let collection = this.mongoService.getMemoCollection(encryptedKey);
 
@@ -60,7 +61,9 @@ export class MemoController {
             memobytes: memobytes,
             iv: iv,
             memox: memox,
-            memoy: memoy
+            memoy: memoy,
+            memowidth: memowidth,
+            memoheight: memoheight
         };
 
         //This is a new memo
@@ -89,7 +92,15 @@ export class MemoController {
 
             let err, res = await collection.updateOne(
                 {_id: id},
-                { $set: {memobytes: memobytes, iv: iv, memox: memox, memoy: memoy}}
+                { $set: {
+                            memobytes: memobytes,
+                            iv: iv,
+                            memox: memox,
+                            memoy: memoy,
+                            memowidth: memowidth,
+                            memoheight: memoheight
+                        }
+                }
             );
     
             if(err){

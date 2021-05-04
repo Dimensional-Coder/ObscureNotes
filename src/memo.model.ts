@@ -15,4 +15,9 @@ export interface Memo{
     //from 0 to 1, inclusive.
     memox: number;
     memoy: number;
+
+    //Width and height of the memo
+    //in pixels
+    memowidth: string;
+    memoheight: string;
 }

@@ -29,6 +29,7 @@
         </section>
 
         <button id="memos-about-btn" type="button" class="memos-btn">About</button>
+        <button id="memos-changelog-btn" type="button" class="memos-btn">Changelog</button>
 
         <!-- Background animation, for aesthetic purposes. -->
         <section id='memos-bg-animation'>
@@ -60,8 +61,22 @@
             <div class='drawing-plus'></div>
         </button>
 
+        <div id='memo-application-error' class='error-inactive'>
+            <div class='memo-lock-container'>
+                <!-- <div class='drawing-lock-top'></div>
+                <div class='drawing-lock-bottom'></div> -->
+                <div class='drawing-x'></div>
+            </div>
+            <p class='memo-error-text'>
+                Obscure Notes encountered an error retrieving memos for this
+                key. Please go back and select a different key.
+            </p>
+        </div>
+
         <!-- Template for creating new memo boxes -->
         <div class='memos-box' id='memos-box-template'>
+            <div class='drawing-circle memo-status memo-status-inactive'></div>
+
             <button type='button' class='memos-btn memo-delete-btn'>
                 <div class='drawing-x'></div>
             </button>
@@ -70,7 +85,7 @@
                 <textarea name="memo-input-01" id="memo-input-xx"
                     class='memo-input' cols="30" rows="10"></textarea>
                 
-                <div class='memo-scrollbar scrollbar-active'>
+                <div class='memo-scrollbar scrollbar-inactive'>
                     <div class='drawing-scrollbar-top memo-scrollbar-component'></div>
                     <div class='drawing-scrollbar-middle memo-scrollbar-component'></div>
                     <div class='drawing-scrollbar-bottom memo-scrollbar-component'></div>
@@ -148,6 +163,41 @@
         </section>
     </section>
     
+    <section class='memo-screen screen-inactive' id='memo-changelog-screen'>
+        <button type='button' class='memos-btn memo-back-btn' id='memos-changelog-return-btn'>
+            <div class='drawing-back-arrow'></div>
+        </button>
+
+        <section id='memo-changelog-content'>
+            <h1>Changelog</h1>
+            <p>I will make this look pretty later, I swear, but it's a work night!</p>
+
+            <h2>Version 0.1.0 (Beta)</h2>
+            <p>Release date: 05/02/21</p>
+            <p>Changes:</p>
+            <ul>
+                <li>Initial beta release deployed</li>
+                <li>Initial memo UI, encryption, and backend functionality</li>
+            </ul>
+
+            <h2>Version 0.2.0 (Beta)</h2>
+            <p>Release date: 05/03/21</p>
+            <p>Changes (thank you for the feedback guys!):</p>
+            <ul>
+                <li>Bug fix: fix error retrieving memos for certain keys</li>
+                <li>
+                    Error checking and display. Notice if failed to 
+                    retrieve memos, status icon to show save status on memos
+                </li>
+                <li>Preserve size of memo on save</li>
+                <li>
+                    Bug fix: bring memo element to forefront when clicking
+                    on or resizing memo
+                </li>
+                <li>Bug fix: handle some edge cases for memo deletions</li>
+            </ul>
+        </section>
+    </section>
     
 </body>
 </html>

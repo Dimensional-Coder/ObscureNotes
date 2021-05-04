@@ -5,7 +5,7 @@
 
 @import './memo-animations.css';
 @import './memo-drawings.css';
-
+@import './memo-errors.css';
 
 /********************************************************/
 /***          Obscure Notes color palette             ***/
@@ -33,6 +33,14 @@
 
     --box-static-border: 50px 20px;
     --box-scaling-border: 25% 10%;
+
+    /* Used to indicate memo save status or errors */
+    --status-success-color: green;
+    --status-progress-color: orange;
+    --status-error-color: red;
+    --status-inactive-color: rgb(90, 90, 90);
+
+    --memo-status-border: gray;
 }
 
 /***********************/
@@ -54,7 +62,6 @@ body.dragging *
 {
     cursor: grabbing !important;
 }
-
 
 /**********************/
 /*** Screen styling ***/
@@ -190,6 +197,24 @@ body.dragging *
     text-align: left;
 }
 
+/********************************/
+/*** Changelog screen styling ***/
+/********************************/
+
+#memo-changelog-content{
+    margin-top: 10vh;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60vw;
+    height: 70vh;
+
+    text-align: left;
+}
+
+#memo-changelog-content ul{
+    
+}
+
 /**********************/
 /*** Button styling ***/
 /**********************/
@@ -221,6 +246,12 @@ body.dragging *
     bottom: 10px;
 }
 
+#memos-changelog-btn{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
 button:active {
     transform: scale(0.99);
 }
@@ -246,6 +277,13 @@ button:active {
     left: 10px;
     top: 10px;
     transform: rotate(90deg);
+}
+
+#memos-changelog-return-btn{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    transform: rotate(180deg);
 }
 
 .memo-delete-btn{

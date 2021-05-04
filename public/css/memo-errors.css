@@ -1,0 +1,76 @@
+
+/*********************/
+/*** Error styling ***/
+/*********************/
+
+#memo-application-error{
+    background-color: var(--memo-box-color);
+    border: 5px solid var(--status-error-color);;
+    width: 40%;
+    height: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.memo-lock-container{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+}
+
+.memo-lock-container .drawing-x{
+    background-color: var(--status-error-color);
+}
+
+.memo-error-text{
+    display: inline-block;
+    color: var(--status-error-color);
+    width: 50%;
+}
+
+.error-inactive{
+    visibility: hidden;
+    position: absolute;
+    top: 300vh;
+}
+
+.error-active{
+    visibility: visible;
+}
+
+/************************/
+/*** Memo status icon ***/
+/************************/
+
+.memo-status{
+    width: 10px;
+    height: 10px;
+    padding: 0px;
+
+    position: absolute;
+    margin: 0px;
+    left: 7px;
+    bottom: 7px;
+}
+
+.memo-status-success{
+    background-color: var(--status-success-color);
+}
+
+.memo-status-error{
+    background-color: var(--status-error-color);
+}
+
+.memo-status-progress{
+    background-color: var(--status-progress-color);
+}
+
+.memo-status-inactive{
+    background-color: var(--status-inactive-color);
+}

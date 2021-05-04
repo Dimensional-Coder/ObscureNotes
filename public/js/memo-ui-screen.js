@@ -77,6 +77,31 @@ export class UiMemoScreen{
         }
     }
 
+    /**
+     * Transition from splash screen to the changelog screen (or back).
+     */
+     static changelogTransition(reverse = false){
+        let splashScreen = document.getElementById('memo-splash-screen');
+        let changeScreen = document.getElementById('memo-changelog-screen');
+
+        if(!reverse){
+            splashScreen.addEventListener('animationend', UiMemoScreen.hideScreen);
+            changeScreen.addEventListener('animationend', UiMemoScreen.anchorScreen);
+            
+            splashScreen.style.animation = 'screen-splash-right 2s ease-in-out 1s 1';
+            changeScreen.style.animation = 'screen-changelog-enter 2s ease-in-out 1s 1';
+            console.log('Screen transition from splash page to changelog started');
+        }else{
+            changeScreen.addEventListener('animationend', UiMemoScreen.hideScreen);
+            splashScreen.addEventListener('animationend', UiMemoScreen.anchorScreen);
+
+            //play animation in reverse if going back to splash screen
+            splashScreen.style.animation = 'screen-splash-right 2s ease-in-out 1s 1 reverse';
+            changeScreen.style.animation = 'screen-changelog-enter 2s ease-in-out 1s 1 reverse';
+            console.log('Screen transition from changelog to splash page started');
+        }
+    }
+
     static transitionToApp(e){
         UiMemoScreen.appTransition(false);
     }
@@ -91,6 +116,14 @@ export class UiMemoScreen{
 
     static transitionFromAbout(e){
         UiMemoScreen.aboutTransition(true);
+    }
+
+    static transitionToChangelog(e){
+        UiMemoScreen.changelogTransition(false);
+    }
+
+    static transitionFromChangelog(e){
+        UiMemoScreen.changelogTransition(true);
     }
     
 }

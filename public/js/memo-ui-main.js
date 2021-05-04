@@ -27,11 +27,17 @@ function initViewScreens(){
     let aboutButton = document.getElementById('memos-about-btn');
     aboutButton.addEventListener('click', UiMemoScreen.transitionToAbout);
 
+    let changelogButton = document.getElementById('memos-changelog-btn');
+    changelogButton.addEventListener('click', UiMemoScreen.transitionToChangelog);
+
     let appReturnButton = document.getElementById('memos-app-return-btn');
     appReturnButton.addEventListener('click', UiMemoScreen.transitionFromApp);
 
     let aboutReturnButton = document.getElementById('memos-about-return-btn');
     aboutReturnButton.addEventListener('click', UiMemoScreen.transitionFromAbout);
+
+    let changelogReturnButton = document.getElementById('memos-changelog-return-btn');
+    changelogReturnButton.addEventListener('click', UiMemoScreen.transitionFromChangelog);
 }
 
 function init(){
@@ -39,7 +45,6 @@ function init(){
     initApplicationScreen();
 
     let testBox = document.getElementById('memos-box-template');
-    UiMemoBox.initMemoBox(testBox);
 
     if(MEMO_DEBUG){
         window.UiMemoDrag = UiMemoDrag;
