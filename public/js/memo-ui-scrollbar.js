@@ -4,11 +4,6 @@
  * resizing.
  */
 
-/**
- * Scripting to handle operations on or in
- * memo box elements.
- */
-
  class MemoScrollbarDrag{
     //Scrollbar element being dragged
     scrollbar = null;
