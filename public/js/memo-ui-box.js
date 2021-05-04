@@ -168,6 +168,12 @@ export class UiMemoBox{
             let y = percentToScreenY(memo.memoy);
             memoBox.style.top = `${y}px`;
         }
+        if(memo.memowidth){
+            input.style.width = memo.memowidth;
+        }
+        if(memo.memoheight){
+            input.style.height = memo.memoheight;
+        }
     }
 
     /**
@@ -188,6 +194,8 @@ export class UiMemoBox{
         let memotext = input.value;
         let memox = getMemoXPercent(box);
         let memoy = getMemoYPercent(box);
+        let memowidth = input.style.width;
+        let memoheight = input.style.height;
 
         let key = getKey();
 
@@ -200,7 +208,8 @@ export class UiMemoBox{
         try{
             if(!update){
                 let res = await MemoApi.createMemo(
-                    encryptedKey, encryptedMemo, iv, memox, memoy
+                    encryptedKey, encryptedMemo, iv,
+                    memox, memoy, memowidth, memoheight
                 );
 
                 //Now that this is a saved resource, update ids to
@@ -218,7 +227,8 @@ export class UiMemoBox{
                 console.log(`New memo created (${res._id})`);
             }else{
                 let res = await MemoApi.updateMemo(
-                    encryptedKey, memoid, encryptedMemo, iv, memox, memoy
+                    encryptedKey, memoid, encryptedMemo, iv,
+                    memox, memoy, memowidth, memoheight
                 );
 
                 console.log(`Memo updated (${res._id})`);
