@@ -39,7 +39,6 @@ function init(){
     initApplicationScreen();
 
     let testBox = document.getElementById('memos-box-template');
-    UiMemoBox.initMemoBox(testBox);
 
     if(MEMO_DEBUG){
         window.UiMemoDrag = UiMemoDrag;

@@ -74,6 +74,8 @@
 
         <!-- Template for creating new memo boxes -->
         <div class='memos-box' id='memos-box-template'>
+            <div class='drawing-circle memo-status memo-status-inactive'></div>
+
             <button type='button' class='memos-btn memo-delete-btn'>
                 <div class='drawing-x'></div>
             </button>
@@ -82,7 +84,7 @@
                 <textarea name="memo-input-01" id="memo-input-xx"
                     class='memo-input' cols="30" rows="10"></textarea>
                 
-                <div class='memo-scrollbar scrollbar-active'>
+                <div class='memo-scrollbar scrollbar-inactive'>
                     <div class='drawing-scrollbar-top memo-scrollbar-component'></div>
                     <div class='drawing-scrollbar-middle memo-scrollbar-component'></div>
                     <div class='drawing-scrollbar-bottom memo-scrollbar-component'></div>

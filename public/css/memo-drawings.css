@@ -72,6 +72,16 @@
     );
 }
 
+.drawing-circle{
+    width: 100%;
+    height: 100%;
+    background-color: var(--status-inactive-color);
+
+    clip-path: circle(50% at 50% 50%);
+    border: 1px solid var(--memo-status-border);
+    border-radius: 50%;
+}
+
 /* Top of a lock symbol */
 .drawing-lock-top{
     width: 20%;
@@ -80,7 +90,7 @@
     margin-left: auto;
     margin-right: auto;
 
-    border: 7px solid var(--error-color);
+    border: 7px solid var(--status-error-color);
     border-bottom: none;
     border-radius: 50% 50% 0% 0%;
 }
@@ -93,7 +103,7 @@
     margin-left: auto;
     margin-right: auto;
 
-    border: 7px solid var(--error-color);
+    border: 7px solid var(--status-error-color);
 }
 
 /* Scrollbar top */

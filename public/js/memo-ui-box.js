@@ -7,7 +7,7 @@
 
 import {UiMemoDrag} from './memo-ui-drag.js';
 import {UiMemoScrollbar} from './memo-ui-scrollbar.js';
-import {UiMemoError} from './memo-ui-error.js';
+import {UiMemoError, MemoStatus} from './memo-ui-error.js';
 
 import { MemoApi } from './memo-api.js';
 import { MemoConvert } from './memo-convert.js';
@@ -197,30 +197,40 @@ export class UiMemoBox{
 
         let [encryptedMemo, iv] = await MemoCrypto.encryptNote(key,salt,memotext);
 
-        if(!update){
-            let res = await MemoApi.createMemo(
-                encryptedKey, encryptedMemo, iv, memox, memoy
-            );
+        try{
+            if(!update){
+                let res = await MemoApi.createMemo(
+                    encryptedKey, encryptedMemo, iv, memox, memoy
+                );
 
-            //Now that this is a saved resource, update ids to
-            //what this memo is identified by
-            box.id = `memo-box-${res._id}`;
-            input.id = `memo-input-${res._id}`;
-            input.name = `memo-input-${res._id}`;
+                //Now that this is a saved resource, update ids to
+                //what this memo is identified by
+                box.id = `memo-box-${res._id}`;
+                input.id = `memo-input-${res._id}`;
+                input.name = `memo-input-${res._id}`;
 
-            //If memo was scheduled for an update, reschedule
-            //with the newly created id
-            let oldId = memoInputId;
-            if(UiMemoBox.scheduledMemoSaves.has(oldId)){
-                UiMemoBox.scheduleSaveMemo(box);
+                //If memo was scheduled for an update, reschedule
+                //with the newly created id
+                let oldId = memoInputId;
+                if(UiMemoBox.scheduledMemoSaves.has(oldId)){
+                    UiMemoBox.scheduleSaveMemo(box);
+                }
+                console.log(`New memo created (${res._id})`);
+            }else{
+                let res = await MemoApi.updateMemo(
+                    encryptedKey, memoid, encryptedMemo, iv, memox, memoy
+                );
+
+                console.log(`Memo updated (${res._id})`);
             }
-            console.log(`New memo created (${res._id})`);
-        }else{
-            let res = await MemoApi.updateMemo(
-                encryptedKey, memoid, encryptedMemo, iv, memox, memoy
-            );
 
-            console.log(`Memo updated (${res._id})`);
+            //Success
+            UiMemoError.setMemoSaveStatus(box, MemoStatus.SUCCESS);
+        }
+        catch(error){
+            console.error(error);
+            console.error('Failed to create or update memo');
+            UiMemoError.setMemoSaveStatus(box, MemoStatus.ERROR);
         }
     }
 
@@ -242,6 +252,7 @@ export class UiMemoBox{
 
         let timeoutId = setTimeout(UiMemoBox.saveMemo, SAVE_WAIT_TIME, input.id);
         UiMemoBox.scheduledMemoSaves.set(input.id, timeoutId);
+        UiMemoError.setMemoSaveStatus(box, MemoStatus.PROGRESS);
     }
 
     //Save memo when the input is changed
@@ -306,6 +317,7 @@ export class UiMemoBox{
         for(let memo of memos){
             let memoBox = UiMemoBox.addMemoElement();
             UiMemoBox.setMemoContent(memoBox, memo);
+            UiMemoError.setMemoSaveStatus(memoBox, MemoStatus.SUCCESS);
         }
 
         console.log('Memos retrieved and decrypted');
@@ -315,7 +327,8 @@ export class UiMemoBox{
     //be interactive
     static initMemoBox(box){
         box.addEventListener('mousedown', UiMemoDrag.startElementDrag);
-        box.addEventListener('mouseup', UiMemoBox.boxSaveHandler)
+        box.addEventListener('mouseup', UiMemoBox.boxSaveHandler);
+        UiMemoError.setMemoSaveStatus(box, MemoStatus.INACTIVE);
 
         let inputContainer = box.getElementsByClassName('memo-input-container')[0];
         let input = inputContainer.getElementsByClassName('memo-input')[0];
