@@ -61,8 +61,14 @@ export class MongoService {
         //are the actual hash
         //https://en.wikipedia.org/wiki/Bcrypt#Description
         encryptedKey = encryptedKey.substring(encryptedKey.length-31);
+
+        //MongoDb doesn't like collections ending with a period.
+        //https://docs.mongodb.com/manual/reference/limits/#mongodb-limit-Restriction-on-Collection-Names
+        if(encryptedKey.endsWith('.'))
+            encryptedKey+='Q'; //Why Q? Well, why not Q?
         
         let collectionName = 'memos'+encryptedKey;
+
         return this.mongoClient.db('test').collection(collectionName);
     }
 }
