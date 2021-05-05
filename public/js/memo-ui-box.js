@@ -301,6 +301,8 @@ export class UiMemoBox{
     }
 
     static clearMemos(){
+        UiMemoError.hideGenericError();
+        
         let boxContainer = document.getElementById('memo-main-box-container');
         let boxes = boxContainer.getElementsByClassName('memos-box');
         
@@ -318,7 +320,6 @@ export class UiMemoBox{
      */
     static async populateMemos(e){
         UiMemoBox.clearMemos();
-        UiMemoError.hideGenericError();
 
         let key = getKey();
 

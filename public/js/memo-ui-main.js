@@ -16,6 +16,12 @@ const MEMO_DEBUG = true;
 function initApplicationScreen(){
     let addBtns = document.getElementsByClassName('memo-add-btn');
     addBtns[0].addEventListener('click', UiMemoBox.addMemo);
+
+    let appScreen = document.getElementById('memo-application-screen');
+    appScreen.addEventListener('animationend', (e) =>{
+        if(e.currentTarget.classList.contains('screen-active'))
+            UiMemoBox.clearMemos();
+    });
 }
 
 function initViewScreens(){
