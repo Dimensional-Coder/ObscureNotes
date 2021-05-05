@@ -61,6 +61,7 @@ body.dragging,
 body.dragging *
 {
     cursor: grabbing !important;
+    user-select: none;
 }
 
 /**********************/

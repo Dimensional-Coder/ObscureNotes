@@ -138,7 +138,7 @@ export class UiMemoScrollbar{
 
         document.body.addEventListener('mousemove', UiMemoScrollbar.scrollbarDragUpdate);
         document.body.addEventListener('mouseup', UiMemoScrollbar.scrollbarDragEnd);
-        //document.body.classList.add('dragging');
+        document.body.classList.add('dragging');
     
         //Prevent memo drag event
         e.stopPropagation();
@@ -185,7 +185,7 @@ export class UiMemoScrollbar{
     
         document.body.removeEventListener('mousemove', UiMemoScrollbar.scrollbarDragUpdate);
         document.body.removeEventListener('mouseup', UiMemoScrollbar.scrollbarDragEnd);
-        //document.body.classList.remove('dragging');
+        document.body.classList.remove('dragging');
         console.log('Ended scrollbar drag');
     }
 
