@@ -28,7 +28,12 @@ export class UiMemoDrag{
     
     static startElementDrag(e){
         let box = e.currentTarget;
-        UiMemoDrag.currentDragTarget = new MemoBoxDrag(box, e.offsetX, e.offsetY);
+
+        let computed = window.getComputedStyle(box);
+        let relativeX = e.clientX - parseInt(computed.left);
+        let relativeY = e.clientY - parseInt(computed.top);
+        
+        UiMemoDrag.currentDragTarget = new MemoBoxDrag(box, relativeX, relativeY);
         document.body.addEventListener('mousemove', UiMemoDrag.updateElementPos);
         document.body.addEventListener('mouseup', UiMemoDrag.endElementDrag);
         document.body.classList.add('dragging');
