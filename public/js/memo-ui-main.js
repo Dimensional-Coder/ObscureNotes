@@ -24,11 +24,23 @@ function initApplicationScreen(){
     });
 }
 
+function openApp(){
+    UiMemoScreen.transitionToApp()
+    UiMemoBox.populateMemos()
+}
+
 function initViewScreens(){
     
     let startButton = document.getElementById('memos-start-btn');
-    startButton.addEventListener('click', UiMemoScreen.transitionToApp);
-    startButton.addEventListener('click', UiMemoBox.populateMemos);
+    startButton.addEventListener('click', openApp);
+
+    let keyInput = document.getElementById('memos-start-key-input')
+    keyInput.addEventListener('keyup', function(e){
+        if(e.key == "Enter"){
+            openApp()
+            keyInput.blur()
+        }
+    })
 
     let aboutButton = document.getElementById('memos-about-btn');
     aboutButton.addEventListener('click', UiMemoScreen.transitionToAbout);
